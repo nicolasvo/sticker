@@ -8,7 +8,6 @@ from telegram.error import TelegramError
 from alter_background import AlterBackground
 from user import User
 
-
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
 
