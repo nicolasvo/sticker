@@ -25,8 +25,7 @@ def handler(event, context):
                 reply_to_message_id=update.message.message_id,
             )
             create_sticker(update, segment)
-        elif update.message.text:
-            if update.message.text == '/delete':
+        elif update.message.text and update.message.text == '/delete':
                 delete_sticker(update)
         else:
             bot.send_message(update.message.chat_id, f"Send me a picture! {random.choice(get_emojis())}")
