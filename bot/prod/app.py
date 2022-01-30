@@ -1,13 +1,11 @@
 import os
 import json
-import logging
+import tempfile
 from telegram import Bot, Update, ChatAction
+from telegram.error import TelegramError
 
 from alter_background import AlterBackground
-
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+from sticker import create_sticker
 
 segment = AlterBackground(model_type="pb")
 segment.load_pascalvoc_model("xception_pascalvoc.pb")
@@ -17,27 +15,22 @@ bot = Bot(BOT_API_TOKEN)
 
 
 def handler(event, context):
-    update = Update.de_json(json.loads(event["body"]), bot)
-    if update.message.photo or update.message.document:
-        bot.send_message(update.message.chat_id, f"Creating sticker 🪄")
-        create_sticker(update)
-    else:
-        bot.send_message(update.message.chat_id, f"lambdo {update.message.text}")
+    try:
+        update = Update.de_json(json.loads(event["body"]), bot)
+        if update.message.photo or update.message.document:
+            bot.send_message(
+                update.message.chat_id,
+                f"Creating sticker 🪄",
+                reply_to_message_id=update.message.message_id,
+            )
+            create_sticker(update)
+        else:
+            bot.send_message(update.message.chat_id, f"lambdo {update.message.text}")
 
-    return 200
-
-
-def create_sticker(update: Update) -> None:
-    chat_id = update.message.chat_id
-    if update.message.photo:
-        logger.info("Photo received")
-        file_id = update.message.photo[-1].file_id
-        file_path = "/tmp/test_photo.jpeg"
-        out_path = "/tmp/test_photo.png"
-        image_file = bot.getFile(file_id)
-        image_file.download(file_path)
-        logger.info("Photo downloaded")
-        segment.boom(file_path, out_path, "person")
-        logger.info("Photo segmented")
-        bot.send_document(chat_id, open(out_path, "rb"))
-        logger.info("Photo sent")
+        return 200
+    except Exception as e:
+        print(f"Error: {e}")
+        bot.send_message(
+            update.message.chat_id, f"🧨", reply_to_message_id=update.message.message_id
+        )
+        return 500
