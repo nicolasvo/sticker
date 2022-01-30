@@ -23,7 +23,7 @@ def handler(event, context):
                 f"Creating sticker 🪄",
                 reply_to_message_id=update.message.message_id,
             )
-            create_sticker(update)
+            create_sticker(update, segment)
         else:
             bot.send_message(update.message.chat_id, f"lambdo {update.message.text}")
 

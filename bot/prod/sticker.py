@@ -12,7 +12,7 @@ BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
 
 
-def create_sticker(update: Update) -> None:
+def create_sticker(update: Update, segment) -> None:
     user = User(update, bot)
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
         if update.message.photo:
