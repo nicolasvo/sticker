@@ -1,11 +1,12 @@
 import os
 import json
-import tempfile
+import random
 from telegram import Bot, Update, ChatAction
 from telegram.error import TelegramError
 
 from alter_background import AlterBackground
 from sticker import create_sticker
+from emojis import get_emojis
 
 segment = AlterBackground(model_type="pb")
 segment.load_pascalvoc_model("xception_pascalvoc.pb")
@@ -20,12 +21,12 @@ def handler(event, context):
         if update.message.photo or update.message.document:
             bot.send_message(
                 update.message.chat_id,
-                f"Creating sticker! 🧙🪄✨",
+                "🪄",
                 reply_to_message_id=update.message.message_id,
             )
             create_sticker(update, segment)
         else:
-            bot.send_message(update.message.chat_id, f"Send me a picture! 🖼")
+            bot.send_message(update.message.chat_id, f"Send me a picture! {random.choice(get_emojis())}")
 
         return 200
     except Exception as e:
