@@ -20,12 +20,12 @@ def handler(event, context):
         if update.message.photo or update.message.document:
             bot.send_message(
                 update.message.chat_id,
-                f"Creating sticker 🪄",
+                f"Creating sticker! 🧙🪄✨",
                 reply_to_message_id=update.message.message_id,
             )
             create_sticker(update, segment)
         else:
-            bot.send_message(update.message.chat_id, f"lambdo {update.message.text}")
+            bot.send_message(update.message.chat_id, f"Send me a picture! 🖼")
 
         return 200
     except Exception as e:
