@@ -65,3 +65,16 @@ def add_sticker_pack(user: User, sticker_path: str) -> None:
             file.file_id,
         )
         print("Sticker set added")
+
+
+def delete_sticker(update: Update) -> None:
+    user = User(update, bot)
+    bot.delete_sticker_from_set(
+        bot.get_sticker_set(user.sticker_set_name).stickers[-1].file_id
+    )
+    print("Sticker deleted")
+    bot.send_message(
+        update.message.chat_id,
+        "Last sticker deleted! 🥲",
+        reply_to_message_id=update.message.message_id,
+    )
