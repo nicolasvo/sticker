@@ -1,6 +1,6 @@
 FROM public.ecr.aws/lambda/python:3.9
 
-COPY app.py alter_background.py xception_pascalvoc.pb ${LAMBDA_TASK_ROOT}
+COPY app.py alter_background.py user.py sticker.py xception_pascalvoc.pb ${LAMBDA_TASK_ROOT}
 
 RUN yum install -y mesa-libGL
 COPY requirements.txt  .
