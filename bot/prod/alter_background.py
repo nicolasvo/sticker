@@ -4,11 +4,7 @@ from pixellib.tune_bg import alter_bg
 
 
 class AlterBackground(alter_bg):
-    def remove_bg(
-        self,
-        img_path,
-        detect=None,
-    ):
+    def remove_bg(self, img_path):
 
         scaled_img_path = (
             img_path.replace(img_path.split("/")[-1], "")
@@ -21,9 +17,17 @@ class AlterBackground(alter_bg):
 
         seg_image = self.segmentAsPascalvoc(scaled_img_path)
 
-        if detect is not None:
-            target_class = self.target_obj(detect)
-            seg_image[1][seg_image[1] != target_class] = 0
+        cat = self.target_obj("cat")[::-1]
+        dog = self.target_obj("dog")[::-1]
+        person = self.target_obj("person")[::-1]
+        mask_remove = (
+            np.any(seg_image[1] != cat, axis=-1)
+            & (np.any(seg_image[1] != dog, axis=-1))
+            & (np.any(seg_image[1] != person, axis=-1))
+        )
+
+        seg_image[1][mask_remove] = [0, 0, 0]
+        seg_image[1][~mask_remove] = [255, 255, 255]
 
         scaled_img = cv2.cvtColor(scaled_img, cv2.COLOR_BGR2BGRA)
         seg_img = cv2.cvtColor(seg_image[1], cv2.COLOR_BGR2BGRA)
@@ -58,6 +62,6 @@ class AlterBackground(alter_bg):
     def write_img(self, img, out_img_path):
         cv2.imwrite(out_img_path, img)
 
-    def boom(self, img_path, out_img_path, detect):
-        img = self.remove_bg(img_path, detect)
+    def boom(self, img_path, out_img_path):
+        img = self.remove_bg(img_path)
         self.write_img(img, out_img_path)
