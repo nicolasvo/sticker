@@ -23,7 +23,7 @@ def create_sticker(update: Update, segment) -> None:
             img_file = bot.getFile(file_id)
             img_file.download(file_path)
             print("Photo downloaded")
-            segment.boom(file_path, out_path, "person")
+            segment.boom(file_path, out_path)
             print("Photo segmented")
             # bot.send_document(chat_id, open(out_path, "rb"))
             # print("Photo sent")
