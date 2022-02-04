@@ -134,6 +134,7 @@ def get_animated_emojis():
         "💩",
         "🤡",
         "👻",
+        "🎨"
     ]
 
     return emojis

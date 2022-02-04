@@ -54,7 +54,7 @@ def create_sticker(update: Update, segment) -> None:
 def add_sticker(user: User, sticker_path: str) -> None:
     with open(sticker_path, "rb") as sticker:
         file = bot.upload_sticker_file(user.id, sticker)
-        bot.add_sticker_to_set(user.id, user.sticker_set_name, "💊", file.file_id)
+        bot.add_sticker_to_set(user.id, user.sticker_set_name, "🎨", file.file_id)
         print("Sticker added to set")
 
 
@@ -64,8 +64,8 @@ def add_sticker_pack(user: User, sticker_path: str) -> None:
         bot.create_new_sticker_set(
             user.id,
             user.sticker_set_name,
-            f"{user.firstname}land",
-            "💊",
+            user.sticker_set_title,
+            "🎨",
             file.file_id,
         )
         print("Sticker set added")
