@@ -7,7 +7,6 @@ from image import rescale_img, write_img
 
 class AlterBackground(alter_bg):
     def remove_bg(self, img_path):
-
         scaled_img_path = (
             img_path.replace(img_path.split("/")[-1], "")
             + f'scaled_{img_path.split("/")[-1]}'
