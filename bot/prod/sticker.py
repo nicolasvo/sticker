@@ -5,6 +5,7 @@ import tempfile
 from telegram import Bot, Update, ChatAction
 from telegram.error import TelegramError
 
+from image import rescale_img, load_img, write_img
 from alter_background import AlterBackground
 from user import User
 
@@ -23,10 +24,13 @@ def create_sticker(update: Update, segment) -> None:
             img_file = bot.getFile(file_id)
             img_file.download(file_path)
             print("Photo downloaded")
-            segment.boom(file_path, out_path)
-            print("Photo segmented")
-            # bot.send_document(chat_id, open(out_path, "rb"))
-            # print("Photo sent")
+            if update.message.caption and update.message.caption == "/please":
+                img = load_img(file_path)
+                img = rescale_img(img)
+                write_img(img, out_path)
+            else:
+                segment.boom(file_path, out_path)
+                print("Photo segmented")
 
             try:
                 bot.get_sticker_set(user.sticker_set_name)

@@ -19,5 +19,9 @@ def rescale_img(img):
     return img
 
 
+def load_img(img_path):
+    return cv2.imread(img_path)
+
+
 def write_img(img, out_img_path):
     cv2.imwrite(out_img_path, img)
