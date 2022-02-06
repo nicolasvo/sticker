@@ -18,11 +18,13 @@ class AlterBackground(alter_bg):
 
         seg_image = self.segmentAsPascalvoc(scaled_img_path)
 
+        bird = self.target_obj("bird")[::-1]
         cat = self.target_obj("cat")[::-1]
         dog = self.target_obj("dog")[::-1]
         person = self.target_obj("person")[::-1]
         mask_remove = (
-            np.any(seg_image[1] != cat, axis=-1)
+            np.any(seg_image[1] != bird, axis=-1)
+            & (np.any(seg_image[1] != cat, axis=-1))
             & (np.any(seg_image[1] != dog, axis=-1))
             & (np.any(seg_image[1] != person, axis=-1))
         )
