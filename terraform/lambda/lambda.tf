@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "bot" {
   function_name = "sticker-bot"
-  memory_size   = 2048
+  memory_size   = 3000
   timeout       = 300
   package_type  = "Image"
   image_uri     = "${data.terraform_remote_state.ecr.outputs.repository_url_bot}:${var.image_tag_bot}"
