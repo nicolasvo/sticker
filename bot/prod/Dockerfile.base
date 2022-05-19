@@ -1,5 +1,0 @@
-FROM public.ecr.aws/lambda/python:3.9
-
-RUN yum install -y mesa-libGL
-COPY requirements.txt  .
-RUN --mount=type=cache,mode=0755,target=/root/.cache/pip pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
