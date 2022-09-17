@@ -23,5 +23,8 @@ def load_img(img_path):
     return cv2.imread(img_path)
 
 
-def write_img(img, out_img_path):
-    cv2.imwrite(out_img_path, img)
+def write_img(img, out_img_path, alpha=False):
+    if alpha:
+        cv2.imwrite(out_img_path, cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA))
+    else:
+        cv2.imwrite(out_img_path, img)

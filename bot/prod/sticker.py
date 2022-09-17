@@ -28,9 +28,12 @@ def create_sticker(update: Update, segment) -> None:
                 img = load_img(file_path)
                 img = rescale_img(img)
                 write_img(img, out_path)
+            elif update.message.caption and update.message.caption == "/no":
+                segment.boom(file_path, out_path, outline=False)
+                print("Photo segmented without outline")
             else:
-                segment.boom(file_path, out_path)
-                print("Photo segmented")
+                segment.boom(file_path, out_path, outline=True)
+                print("Photo segmented with outline")
 
             try:
                 bot.get_sticker_set(user.sticker_set_name)

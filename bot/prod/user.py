@@ -51,5 +51,5 @@ class User:
             sticker_set_title = "'S fInEsT"
         else:
             sticker_set_title = "'s FiNeSt"
-            
+
         return sarcastic(self.firstname) + sticker_set_title
