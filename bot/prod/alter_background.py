@@ -7,15 +7,20 @@ from image import rescale_img, write_img
 
 
 class AlterBackground(alter_bg):
-    def remove_bg(self, img_path):
+    def remove_bg(self, img_path, rescale=True):
         scaled_img_path = (
             img_path.replace(img_path.split("/")[-1], "")
             + f'scaled_{img_path.split("/")[-1]}'
         )
 
         ori_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
-        scaled_img = rescale_img(ori_img)
-        write_img(scaled_img, scaled_img_path)
+
+        if rescale:
+            scaled_img = rescale_img(ori_img)
+            write_img(scaled_img, scaled_img_path)
+        else:
+            scaled_img_path = img_path
+            scaled_img = ori_img
 
         seg_image = self.segmentAsPascalvoc(scaled_img_path)
 
@@ -184,3 +189,7 @@ class AlterBackground(alter_bg):
             write_img(scaled_img, out_img_path, alpha=True)
         else:
             write_img(img, out_img_path)
+
+    def bill(self, img_path, out_img_path):
+        img = self.remove_bg(img_path, rescale=False)
+        write_img(img, out_img_path)

@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import tempfile
+from datetime import datetime
 from telegram import Bot, Update, ChatAction
 from telegram.error import TelegramError
 
@@ -24,7 +25,11 @@ def create_sticker(update: Update, segment) -> None:
             img_file = bot.getFile(file_id)
             img_file.download(file_path)
             print("Photo downloaded")
-            if update.message.caption and update.message.caption == "/please":
+            if update.message.caption and update.message.caption == "/file":
+                segment.bill(file_path, out_path)
+                send_file(update, out_path)
+                return
+            elif update.message.caption and update.message.caption == "/please":
                 img = load_img(file_path)
                 img = rescale_img(img)
                 write_img(img, out_path)
@@ -84,4 +89,12 @@ def delete_sticker(update: Update) -> None:
         update.message.chat_id,
         "Last sticker deleted! 🥲",
         reply_to_message_id=update.message.message_id,
+    )
+
+
+def send_file(update: Update, file_path: str) -> None:
+    bot.send_document(
+        chat_id=update.message.chat_id,
+        document=open(file_path, "rb"),
+        filename=f"photo_{datetime.today().strftime('%Y-%m-%d_%H-%M-%S')}.png",
     )
