@@ -8,9 +8,6 @@ from alter_background import AlterBackground
 from sticker import create_sticker, delete_sticker
 from emojis import get_emojis, get_animated_emojis
 
-segment = AlterBackground(model_type="pb")
-segment.load_pascalvoc_model("xception_pascalvoc.pb")
-
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
 
@@ -24,6 +21,12 @@ def handler(event, context):
                 f"{random.choice(get_animated_emojis())}",
                 reply_to_message_id=update.message.message_id,
             )
+            if "segment" in globals():
+                print("Model already loaded")
+            else:
+                print("Loading model")
+                segment = AlterBackground(model_type="pb")
+                segment.load_pascalvoc_model("xception_pascalvoc.pb")
             create_sticker(update, segment)
         elif update.message.text and update.message.text == "/delete":
             delete_sticker(update)
