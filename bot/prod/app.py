@@ -27,6 +27,7 @@ def handler(event, context):
                 print("Model already loaded")
             else:
                 print("Loading model")
+                global segment
                 segment = AlterBackground(model_type="pb")
                 segment.load_pascalvoc_model("xception_pascalvoc.pb")
             create_sticker(update, segment)
