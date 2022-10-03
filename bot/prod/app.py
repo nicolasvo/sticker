@@ -21,7 +21,9 @@ def handler(event, context):
                 f"{random.choice(get_animated_emojis())}",
                 reply_to_message_id=update.message.message_id,
             )
-            if "segment" in globals():
+            print(f"locals: {locals()}")
+            print(f"globals: {globals()}")
+            if "segment" in globals() or "segment" in locals():
                 print("Model already loaded")
             else:
                 print("Loading model")
