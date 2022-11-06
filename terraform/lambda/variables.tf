@@ -1,31 +1,39 @@
 variable "BOT_API_TOKEN" {
-    type = string
+  type = string
 }
 
 variable "NUMERO_GAGNANT" {
-    type = string
+  type = string
+}
+
+variable "queue_name" {
+  type = string
 }
 
 variable "image_tag_bot" {
-    type = string
+  type = string
 }
 
 variable "image_tag_bot_down" {
-    type = string
+  type = string
+}
+
+variable "image_tag_bot_producer" {
+  type = string
 }
 
 variable "remote_state_ecr_bucket" {
-    type = string
+  type = string
 }
 
 variable "remote_state_ecr_key" {
-    type = string
+  type = string
 }
 
 variable "remote_state_ecr_region" {
-    type = string
+  type = string
 }
 
 variable "provider_region" {
-    type = string
+  type = string
 }
