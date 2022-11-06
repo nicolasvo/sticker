@@ -34,6 +34,6 @@ variable "remote_state_ecr_region" {
   type = string
 }
 
-variable "provider_region" {
+variable "region" {
   type = string
 }
