@@ -1,4 +1,4 @@
-variable "provider_region" {
+variable "region" {
   type = string
 }
 
