@@ -1,4 +1,4 @@
 variable "provider_region" {
-    type = string
+  type = string
 }
 
