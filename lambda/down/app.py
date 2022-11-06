@@ -11,7 +11,9 @@ bot = Bot(BOT_API_TOKEN)
 
 def handler(event, context):
     update = Update.de_json(json.loads(event["body"]), bot)
-    bot.send_message(update.message.chat_id, f"Sorry, I'm down at the moment... {random.choice(get_emojis())}")
+    bot.send_message(
+        update.message.chat_id,
+        f"Sorry, I'm down at the moment... {random.choice(get_emojis())}",
+    )
 
     return 200
-
