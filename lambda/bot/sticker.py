@@ -1,13 +1,10 @@
 import os
-import json
-import logging
 import tempfile
 from datetime import datetime
-from telegram import Bot, Update, ChatAction
-from telegram.error import TelegramError
+
+from telegram import Bot, Update
 
 from image import rescale_img, load_img, write_img
-from alter_background import AlterBackground
 from user import User
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")

@@ -1,8 +1,8 @@
-import math
-import numpy as np
 import cv2
+import numpy as np
 from PIL import Image
 from pixellib.tune_bg import alter_bg
+
 from image import rescale_img, write_img
 
 

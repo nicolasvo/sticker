@@ -1,12 +1,12 @@
-import os
 import json
+import os
 import random
-from telegram import Bot, Update, ChatAction
-from telegram.error import TelegramError
+
+from telegram import Bot, Update
 
 from alter_background import AlterBackground
-from sticker import create_sticker, delete_sticker
 from emojis import get_emojis, get_animated_emojis
+from sticker import create_sticker, delete_sticker
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
