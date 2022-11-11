@@ -5,4 +5,4 @@ backend.tfvars
 .DS_Store
 __pycache__/
 *.pb
-
+.idea
