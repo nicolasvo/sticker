@@ -10,7 +10,11 @@ class User:
         self.bot_username = bot.username
         self.id = update.message.from_user.id
         self.firstname = update.message.from_user.first_name
-        self.hash = hashlib.md5(bytearray(self.id + int(NUMERO_GAGNANT))).hexdigest()
+        # TODO: remove hack
+        if len(str(self.id)) > 9:
+            self.hash = hashlib.md5(bytearray((str(self.id) + NUMERO_GAGNANT).encode("utf-8"))).hexdigest()
+        else:
+            self.hash = hashlib.md5(bytearray(self.id + int(NUMERO_GAGNANT))).hexdigest()
         self.sticker_set_name = self.get_sticker_set_name(bot, 0)
         self.sticker_set_title = self.get_sticker_set_title()
         self.emoji = "💊"
