@@ -1,5 +1,5 @@
-import os
 import hashlib
+import os
 
 NUMERO_GAGNANT = os.getenv("NUMERO_GAGNANT")
 
