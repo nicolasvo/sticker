@@ -9,11 +9,21 @@ from user import User
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
-
+NUMERO_GAGNANT = os.getenv("NUMERO_GAGNANT")
 
 def create_sticker(update: Update, segment) -> None:
+    print("[debug] user info")
+    print(update.message.chat_id)
+    print(bot.username)
+    print(update.message.from_user.id)
+    print(update.message.from_user.first_name)
+    import hashlib
+    print(hashlib.md5(bytearray(update.message.from_user.id + int(NUMERO_GAGNANT))).hexdigest())
+    print("[debug] user function")
     user = User(update, bot)
+
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
+        print("[debug] process update")
         if update.message.photo:
             print("Photo received")
             file_id = update.message.photo[-1].file_id
