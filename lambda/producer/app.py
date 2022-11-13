@@ -9,7 +9,6 @@ def handler(event, context):
         QueueName=os.getenv("QUEUE_NAME"),
     )
     update = json.dumps(event["body"])
-    print(update)
     response = queue.send_message(MessageBody=update)
     print(response)
 

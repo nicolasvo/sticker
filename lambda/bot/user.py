@@ -20,10 +20,6 @@ class User:
         self.emoji = "💊"
 
     def get_sticker_set_name(self, bot, pack_number=1):
-        print("[debug] get sticker set name")
-        print(f"[debug] id {self.id}")
-        print(f"[debug] firstname {self.firstname}")
-        print(f"[debug] hash {self.hash}")
         sticker_set_name = f"Z_{pack_number}_{self.hash[:10]}_by_{self.bot_username}"
         if pack_number > 1:
             sticker_set_name = (
@@ -42,9 +38,7 @@ class User:
         return sticker_set_name
 
     def get_sticker_set_title(self):
-        print("[debug] get sticker set title")
         def sarcastic(string, start_lower=True):
-            print("[debug] sarcastic much")
             if start_lower:
                 res = [
                     l.upper() if index % 2 else l

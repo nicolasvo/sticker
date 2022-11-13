@@ -29,7 +29,6 @@ def handler(event, context):
                 global segment
                 segment = AlterBackground(model_type="pb")
                 segment.load_pascalvoc_model("xception_pascalvoc.pb")
-            print("[debug] create sticker")
             create_sticker(update, segment)
         elif update.message.text and update.message.text == "/delete":
             delete_sticker(update)
