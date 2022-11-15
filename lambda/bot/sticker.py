@@ -18,9 +18,10 @@ bot = Bot(BOT_API_TOKEN)
 
 
 def create_sticker(update: Update, segment, reply_data: str) -> None:
-    user = User(update, bot)
+    user = User(update, bot, reply=True)
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
         print("Reply received")
+        print(f"[debug] user id {user}")
         file_id = update.message.reply_to_message.photo[-1].file_id
         file_path = f"{tmpdirname}/{file_id}.jpeg"
         out_path = f"{tmpdirname}/{file_id}.png"
@@ -37,9 +38,17 @@ def create_sticker(update: Update, segment, reply_data: str) -> None:
             print("Segmenting with model 3")
         try:
             print("[debug]")
+            print(f"[debug] user {user.id}")
+            print(f"[debug] user {user.firstname}")
+            print(f"[debug] user {user.sticker_set_name}")
+            print(f"[debug] user {user.sticker_set_title}")
+            print("[debug] get_sticker_set")
             bot.get_sticker_set(user.sticker_set_name)
+            print("[debug] add_sticker")
             add_sticker(user, out_path)
+            print("[debug] sticker_set = bot.get_sticker_set")
             sticker_set = bot.get_sticker_set(user.sticker_set_name)
+            print("[debug] send_sticker")
             bot.send_sticker(
                 user.chat_id,
                 sticker_set.stickers[-1],
