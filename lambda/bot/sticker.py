@@ -52,9 +52,9 @@ def create_sticker(update: Update, segment) -> None:
 
                 keyboard = [
                     [
-                        InlineKeyboardButton("1", f"{file_id} 1"),
-                        InlineKeyboardButton("2", f"{file_id} 2"),
-                        InlineKeyboardButton("3", f"{file_id} 3"),
+                        InlineKeyboardButton("1", callback_data="1"),
+                        InlineKeyboardButton("2", callback_data="2"),
+                        InlineKeyboardButton("3", callback_data="3"),
                     ]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
@@ -64,10 +64,13 @@ def create_sticker(update: Update, segment) -> None:
                     reply_to_message_id=update.message.message_id,
                 )
                 print(f"[debug] {len(media_message)}")
+                print(f"[debug] {media_message[0]}")
+                print(f"[debug] {media_message[1]}")
                 bot.send_message(
+                    chat_id=user.chat_id,
                     text="Select a picture",
                     reply_markup=reply_markup,
-                    reply_to_message_id=media_message[0].message_id,
+                    reply_to_message_id=update.message.chat_id,
                 )
                 # bot.get_sticker_set(user.sticker_set_name)
                 # add_sticker(user, out_path)
