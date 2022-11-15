@@ -14,6 +14,7 @@ bot = Bot(BOT_API_TOKEN)
 
 def handler(event, context):
     try:
+        print(f"[debug] event: {event}")
         _update = json.loads(json.loads(event["Records"][0]["body"]))
         update = Update.de_json(_update, bot)
         if update.message.photo or update.message.document:
