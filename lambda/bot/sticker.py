@@ -17,7 +17,45 @@ BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
 
 
-def create_sticker(update: Update, segment) -> None:
+def create_sticker(update: Update, segment, reply_data: str) -> None:
+    user = User(update, bot)
+    with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
+        print("Reply received")
+        file_id = update.message.reply_to_message.photo[-1].file_id
+        file_path = f"{tmpdirname}/{file_id}.jpeg"
+        out_path = f"{tmpdirname}/{file_id}.png"
+        img_file = bot.getFile(file_id)
+        img_file.download(file_path)
+        print("Photo downloaded")
+        if reply_data == "1":
+            print("Segmenting with model 1")
+            segment.boom(file_path, out_path, outline=True)
+            print("Photo segmented with outline")
+        elif reply_data == "2":
+            print("Segmenting with model 2")
+        elif reply_data == "3":
+            print("Segmenting with model 3")
+        # try:
+        #     print("[debug]")
+        #     bot.get_sticker_set(user.sticker_set_name)
+        #     add_sticker(user, out_path)
+        #     sticker_set = bot.get_sticker_set(user.sticker_set_name)
+        #     bot.send_sticker(
+        #         user.chat_id,
+        #         sticker_set.stickers[-1],
+        #         reply_to_message_id=update.message.message_id,
+        #     )
+        # except Exception as e:
+        #     add_sticker_pack(user, out_path)
+        #     sticker_set = bot.get_sticker_set(user.sticker_set_name)
+        #     bot.send_sticker(
+        #         user.chat_id,
+        #         sticker_set.stickers[-1],
+        #         reply_to_message_id=update.message.message_id,
+        #     )
+
+
+def handle_image(update: Update, segment) -> None:
     user = User(update, bot)
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
         if update.message.photo:
@@ -70,7 +108,7 @@ def create_sticker(update: Update, segment) -> None:
                     chat_id=user.chat_id,
                     text="Select a picture",
                     reply_markup=reply_markup,
-                    reply_to_message_id=update.message.chat_id,
+                    reply_to_message_id=update.message.message_id,
                 )
                 # bot.get_sticker_set(user.sticker_set_name)
                 # add_sticker(user, out_path)
