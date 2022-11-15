@@ -2,7 +2,13 @@ import os
 import tempfile
 from datetime import datetime
 
-from telegram import Bot, Update, InputMediaPhoto
+from telegram import (
+    Bot,
+    Update,
+    InputMediaPhoto,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
 
 from image import rescale_img, load_img, write_img
 from user import User
@@ -43,9 +49,25 @@ def create_sticker(update: Update, segment) -> None:
             try:
                 print("[debug]")
                 pixellib_photo = InputMediaPhoto(open(out_path, "rb"))
-                bot.send_media_group(
+
+                keyboard = [
+                    [
+                        InlineKeyboardButton("1", f"{file_id} 1"),
+                        InlineKeyboardButton("2", f"{file_id} 2"),
+                        InlineKeyboardButton("3", f"{file_id} 3"),
+                    ]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                media_message = bot.send_media_group(
                     user.chat_id,
-                    [pixellib_photo]
+                    [pixellib_photo, pixellib_photo],
+                    reply_to_message_id=update.message.message_id,
+                )
+                print(f"[debug] {len(media_message)}")
+                bot.send_message(
+                    text="Select a picture",
+                    reply_markup=reply_markup,
+                    reply_to_message_id=media_message[0].message_id,
                 )
                 # bot.get_sticker_set(user.sticker_set_name)
                 # add_sticker(user, out_path)
