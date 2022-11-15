@@ -35,24 +35,24 @@ def create_sticker(update: Update, segment, reply_data: str) -> None:
             print("Segmenting with model 2")
         elif reply_data == "3":
             print("Segmenting with model 3")
-        # try:
-        #     print("[debug]")
-        #     bot.get_sticker_set(user.sticker_set_name)
-        #     add_sticker(user, out_path)
-        #     sticker_set = bot.get_sticker_set(user.sticker_set_name)
-        #     bot.send_sticker(
-        #         user.chat_id,
-        #         sticker_set.stickers[-1],
-        #         reply_to_message_id=update.message.message_id,
-        #     )
-        # except Exception as e:
-        #     add_sticker_pack(user, out_path)
-        #     sticker_set = bot.get_sticker_set(user.sticker_set_name)
-        #     bot.send_sticker(
-        #         user.chat_id,
-        #         sticker_set.stickers[-1],
-        #         reply_to_message_id=update.message.message_id,
-        #     )
+        try:
+            print("[debug]")
+            bot.get_sticker_set(user.sticker_set_name)
+            add_sticker(user, out_path)
+            sticker_set = bot.get_sticker_set(user.sticker_set_name)
+            bot.send_sticker(
+                user.chat_id,
+                sticker_set.stickers[-1],
+                reply_to_message_id=update.message.message_id,
+            )
+        except Exception as e:
+            add_sticker_pack(user, out_path)
+            sticker_set = bot.get_sticker_set(user.sticker_set_name)
+            bot.send_sticker(
+                user.chat_id,
+                sticker_set.stickers[-1],
+                reply_to_message_id=update.message.message_id,
+            )
 
 
 def handle_image(update: Update, segment) -> None:
@@ -110,24 +110,9 @@ def handle_image(update: Update, segment) -> None:
                     reply_markup=reply_markup,
                     reply_to_message_id=update.message.message_id,
                 )
-                # bot.get_sticker_set(user.sticker_set_name)
-                # add_sticker(user, out_path)
-                # sticker_set = bot.get_sticker_set(user.sticker_set_name)
-                # bot.send_sticker(
-                #     user.chat_id,
-                #     sticker_set.stickers[-1],
-                #     reply_to_message_id=update.message.message_id,
-                # )
             except Exception as e:
                 print("[debug]")
                 print(e)
-                # add_sticker_pack(user, out_path)
-                # sticker_set = bot.get_sticker_set(user.sticker_set_name)
-                # bot.send_sticker(
-                #     user.chat_id,
-                #     sticker_set.stickers[-1],
-                #     reply_to_message_id=update.message.message_id,
-                # )
 
 
 def add_sticker(user: User, sticker_path: str) -> None:
