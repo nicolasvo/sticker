@@ -6,3 +6,5 @@ backend.tfvars
 __pycache__/
 *.pb
 .idea
+requirements_*
+*.ipynb
