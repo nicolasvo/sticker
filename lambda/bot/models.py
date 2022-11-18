@@ -28,8 +28,8 @@ def segment_modnet(img_path, out_path, t=200):
     blob = np.array([[channels[2], channels[1], channels[0]]])
 
     # load model
-    modelPath = "modnet_photographic_portrait_matting_opset9.onnx"
-    net = cv2.dnn.readNetFromONNX(modelPath)
+    model_path = "modnet_photographic_portrait_matting_opset9.onnx"
+    net = cv2.dnn.readNetFromONNX(model_path)
 
     # select CPU
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
