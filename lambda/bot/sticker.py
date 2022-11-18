@@ -11,6 +11,7 @@ from telegram import (
 )
 
 from image import rescale_img, load_img, write_img
+from models import segment_modnet, segment_u2net
 from user import User
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
@@ -29,26 +30,18 @@ def create_sticker(update: Update, segment, reply_data: str) -> None:
         img_file.download(file_path)
         print("Photo downloaded")
         if reply_data == "1":
-            print("Segmenting with model 1")
+            print("Sticker with model 1")
             segment.boom(file_path, out_path, outline=True)
-            print("Photo segmented with outline")
         elif reply_data == "2":
-            print("Segmenting with model 2")
+            print("Sticker with model 2")
+            segment_u2net(file_path, out_path)
         elif reply_data == "3":
-            print("Segmenting with model 3")
+            print("Sticker with model 3")
+            segment_modnet(file_path, out_path)
         try:
-            print("[debug]")
-            print(f"[debug] user {user.id}")
-            print(f"[debug] user {user.firstname}")
-            print(f"[debug] user {user.sticker_set_name}")
-            print(f"[debug] user {user.sticker_set_title}")
-            print("[debug] get_sticker_set")
             bot.get_sticker_set(user.sticker_set_name)
-            print("[debug] add_sticker")
             add_sticker(user, out_path)
-            print("[debug] sticker_set = bot.get_sticker_set")
             sticker_set = bot.get_sticker_set(user.sticker_set_name)
-            print("[debug] send_sticker")
             bot.send_sticker(
                 user.chat_id,
                 sticker_set.stickers[-1],
@@ -87,27 +80,37 @@ def handle_image(update: Update, segment) -> None:
                 segment.boom(file_path, out_path, outline=False)
                 print("Photo segmented without outline")
             else:
-                segment.boom(file_path, out_path, outline=True)
-                print("Photo segmented with outline")
+                images = []
 
-                # TODO: segment rembg
-                # TODO: segment u2net
+                out_path = f"{tmpdirname}/xception_{file_id}.png"
+                segment.boom(file_path, out_path, outline=True)
+                images.append(out_path)
+                print("Photo segmented with model 1")
+
+                out_path = f"{tmpdirname}/u2net_{file_id}.png"
+                segment_u2net(file_path, out_path)
+                images.append(out_path)
+                print("Photo segmented with model 2")
+
+                out_path = f"{tmpdirname}/modnet_{file_id}.png"
+                segment_modnet(file_path, out_path)
+                images.append(out_path)
+                print("Photo segmented with model 3")
 
             try:
                 print("[debug]")
                 pixellib_photo = InputMediaPhoto(open(out_path, "rb"))
-
+                medias = [InputMediaPhoto(open(path, "rb")) for path in images]
                 keyboard = [
                     [
-                        InlineKeyboardButton("1", callback_data="1"),
-                        InlineKeyboardButton("2", callback_data="2"),
-                        InlineKeyboardButton("3", callback_data="3"),
+                        InlineKeyboardButton(str(n + 1), callback_data=str(n + 1))
+                        for n in range(3)
                     ]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 media_message = bot.send_media_group(
                     user.chat_id,
-                    [pixellib_photo, pixellib_photo],
+                    medias,
                     reply_to_message_id=update.message.message_id,
                 )
                 print(f"[debug] {len(media_message)}")
