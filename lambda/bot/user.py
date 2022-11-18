@@ -8,6 +8,7 @@ NUMERO_GAGNANT = os.getenv("NUMERO_GAGNANT")
 
 class User:
     def __init__(self, update: Update, bot, reply=False):
+        # TODO: remove chat_id
         if reply:
             self.chat_id = update.message.chat.id
             self.id = update.message.chat.id
