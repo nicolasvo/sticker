@@ -66,10 +66,8 @@ def segment_modnet(img_path, out_path, t=200):
     alpha = out[:, :, 3]
     alpha[np.all(out[:, :, 0:3] == (0, 0, 0), 2)] = 0
 
-    cv2.imwrite(out_path, out)
-    # cv2.imwrite('mask.png',(mask*255).astype(np.uint8))
-
+    scaled_img = rescale_img(out)
+    cv2.imwrite(out_path, scaled_img)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
     img = add_outline(img, threshold=0, stroke_size=6, colors=((255, 255, 255),))
-    scaled_img = rescale_img(np.array(img))
-    write_img(scaled_img, out_path, alpha=True)
+    write_img(np.array(img), out_path, alpha=True)
