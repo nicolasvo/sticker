@@ -9,7 +9,12 @@ def segment_u2net(img_path, out_path, white_outline=True):
     with open(img_path, "rb") as i:
         with open(out_path, "wb") as o:
             input = i.read()
-            output = remove(input, alpha_matting=True, alpha_matting_erode_size=0)
+            output = remove(
+                input,
+                alpha_matting=True,
+                alpha_matting_erode_size=0,
+                alpha_matting_foreground_threshold=30,
+            )
             o.write(output)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
     if white_outline:
