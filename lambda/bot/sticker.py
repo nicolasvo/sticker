@@ -22,7 +22,6 @@ def create_sticker(update: Update, segment, reply_data: str) -> None:
     user = User(update, bot, reply=True)
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
         print("Reply received")
-        print(f"[debug] user id {user}")
         file_id = update.message.reply_to_message.photo[-1].file_id
         file_path = f"{tmpdirname}/{file_id}.jpeg"
         out_path = f"{tmpdirname}/{file_id}.png"
@@ -98,7 +97,6 @@ def handle_image(update: Update, segment) -> None:
                 print("Photo segmented with model 3")
 
             try:
-                print("[debug]")
                 medias = [InputMediaPhoto(open(path, "rb")) for path in images]
                 keyboard = [
                     [
@@ -112,9 +110,6 @@ def handle_image(update: Update, segment) -> None:
                     medias,
                     reply_to_message_id=update.message.message_id,
                 )
-                print(f"[debug] {len(media_message)}")
-                print(f"[debug] {media_message[0]}")
-                print(f"[debug] {media_message[1]}")
                 bot.send_message(
                     chat_id=user.chat_id,
                     text="Select a picture",
@@ -122,7 +117,6 @@ def handle_image(update: Update, segment) -> None:
                     reply_to_message_id=update.message.message_id,
                 )
             except Exception as e:
-                print("[debug]")
                 print(e)
 
 
