@@ -1,7 +1,11 @@
-pixellib
 python-telegram-bot==13.10
+keras==2.7.0
 tensorboard
-tensorflow
+tensorflow==2.7.0
 tensorflow-estimator
 tensorflow-io-gcs-filesystem
+imantics
+numpy
+Pillow
+opencv-python
 rembg
