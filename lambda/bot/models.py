@@ -72,8 +72,8 @@ def segment_modnet(img_path, out_path, t=200, white_outline=True):
     cv2.imwrite(out_path, out)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
     if white_outline:
-        img = add_outline(img, threshold=0, stroke_size=7, colors=((255, 255, 255),))
+        img = add_outline(img, threshold=0, stroke_size=8, colors=((255, 255, 255),))
     else:
-        img = add_outline(img, threshold=0, stroke_size=7, colors=((0, 255, 0),))
+        img = add_outline(img, threshold=0, stroke_size=8, colors=((0, 255, 0),))
     scaled_img = rescale_img(np.array(img))
     write_img(scaled_img, out_path, alpha=True)
