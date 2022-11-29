@@ -12,14 +12,12 @@ def segment_u2net(img_path, out_path, white_outline=True):
             output = remove(input, alpha_matting=True, alpha_matting_erode_size=0)
             o.write(output)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
-    scaled_img = rescale_img(img)
     if white_outline:
-        img = add_outline(
-            scaled_img, threshold=0, stroke_size=6, colors=((255, 255, 255),)
-        )
+        img = add_outline(img, threshold=0, stroke_size=6, colors=((255, 255, 255),))
     else:
-        img = add_outline(scaled_img, threshold=0, stroke_size=6, colors=((0, 255, 0),))
-    write_img(np.array(img), out_path, alpha=True)
+        img = add_outline(img, threshold=0, stroke_size=6, colors=((0, 255, 0),))
+    scaled_img = rescale_img(np.array(img))
+    write_img(scaled_img, out_path, alpha=True)
 
 
 def segment_modnet(img_path, out_path, t=200, white_outline=True):
@@ -71,13 +69,11 @@ def segment_modnet(img_path, out_path, t=200, white_outline=True):
     alpha = out[:, :, 3]
     alpha[np.all(out[:, :, 0:3] == (0, 0, 0), 2)] = 0
 
-    scaled_img = rescale_img(out)
-    cv2.imwrite(out_path, scaled_img)
+    cv2.imwrite(out_path, out)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
     if white_outline:
-        img = add_outline(
-            scaled_img, threshold=0, stroke_size=6, colors=((255, 255, 255),)
-        )
+        img = add_outline(img, threshold=0, stroke_size=7, colors=((255, 255, 255),))
     else:
-        img = add_outline(scaled_img, threshold=0, stroke_size=6, colors=((0, 255, 0),))
-    write_img(np.array(img), out_path, alpha=True)
+        img = add_outline(img, threshold=0, stroke_size=7, colors=((0, 255, 0),))
+    scaled_img = rescale_img(np.array(img))
+    write_img(scaled_img, out_path, alpha=True)
