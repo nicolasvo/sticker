@@ -8,4 +8,4 @@ imantics
 numpy
 Pillow
 opencv-python
-rembg
+git+https://github.com/nicolasvo/rembg.git

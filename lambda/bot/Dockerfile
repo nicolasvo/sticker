@@ -1,7 +1,7 @@
-FROM sticker-base:latest
+FROM sticker-base:rembg-var-task
 
 COPY xception_pascalvoc.pb modnet_photographic_portrait_matting_opset9.onnx ${LAMBDA_TASK_ROOT}
-COPY u2net.onnx /root/.u2net/
+COPY u2net.onnx ${LAMBDA_TASK_ROOT}/.u2net/
 COPY app.py alter_background.py deeplab.py user.py sticker.py image.py models.py emojis.py ${LAMBDA_TASK_ROOT}
 ENV NUMBA_CACHE_DIR=/tmp
 
