@@ -99,7 +99,6 @@ def handle_image(update: Update, segment) -> None:
 
             try:
                 print("[debug]")
-                pixellib_photo = InputMediaPhoto(open(out_path, "rb"))
                 medias = [InputMediaPhoto(open(path, "rb")) for path in images]
                 keyboard = [
                     [
