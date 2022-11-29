@@ -5,19 +5,24 @@ from rembg import remove
 from image import add_outline, rescale_img, write_img
 
 
-def segment_u2net(img_path, out_path):
+def segment_u2net(img_path, out_path, white_outline=True):
     with open(img_path, "rb") as i:
         with open(out_path, "wb") as o:
             input = i.read()
             output = remove(input, alpha_matting=True, alpha_matting_erode_size=0)
             o.write(output)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
-    img = add_outline(img, threshold=0, stroke_size=6, colors=((255, 255, 255),))
-    scaled_img = rescale_img(np.array(img))
-    write_img(scaled_img, out_path, alpha=True)
+    scaled_img = rescale_img(img)
+    if white_outline:
+        img = add_outline(
+            scaled_img, threshold=0, stroke_size=6, colors=((255, 255, 255),)
+        )
+    else:
+        img = add_outline(scaled_img, threshold=0, stroke_size=6, colors=((0, 255, 0),))
+    write_img(np.array(img), out_path, alpha=True)
 
 
-def segment_modnet(img_path, out_path, t=200):
+def segment_modnet(img_path, out_path, t=200, white_outline=True):
     # load image
     frame = cv2.imread(img_path)
     blob = cv2.resize(frame, (672, 512), cv2.INTER_AREA)
@@ -69,5 +74,10 @@ def segment_modnet(img_path, out_path, t=200):
     scaled_img = rescale_img(out)
     cv2.imwrite(out_path, scaled_img)
     img = cv2.imread(out_path, cv2.IMREAD_UNCHANGED)
-    img = add_outline(img, threshold=0, stroke_size=6, colors=((255, 255, 255),))
+    if white_outline:
+        img = add_outline(
+            scaled_img, threshold=0, stroke_size=6, colors=((255, 255, 255),)
+        )
+    else:
+        img = add_outline(scaled_img, threshold=0, stroke_size=6, colors=((0, 255, 0),))
     write_img(np.array(img), out_path, alpha=True)

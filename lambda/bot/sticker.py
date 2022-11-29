@@ -82,17 +82,17 @@ def handle_image(update: Update, segment) -> None:
                 images = []
 
                 out_path = f"{tmpdirname}/xception_{file_id}.png"
-                segment.boom(file_path, out_path, outline=True)
+                segment.boom(file_path, out_path, outline=True, white_outline=False)
                 images.append(out_path)
                 print("Photo segmented with model 1")
 
                 out_path = f"{tmpdirname}/u2net_{file_id}.png"
-                segment_u2net(file_path, out_path)
+                segment_u2net(file_path, out_path, white_outline=False)
                 images.append(out_path)
                 print("Photo segmented with model 2")
 
                 out_path = f"{tmpdirname}/modnet_{file_id}.png"
-                segment_modnet(file_path, out_path)
+                segment_modnet(file_path, out_path, white_outline=False)
                 images.append(out_path)
                 print("Photo segmented with model 3")
 

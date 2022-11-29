@@ -179,12 +179,17 @@ class AlterBackground(alter_bg):
         pil_img = Image.fromarray(cv_img.astype("uint8"))
         return pil_img
 
-    def boom(self, img_path, out_img_path, outline):
+    def boom(self, img_path, out_img_path, outline, white_outline=True):
         img = self.remove_bg(img_path)
         if outline:
-            img = self.add_outline(
-                img, threshold=0, stroke_size=6, colors=((255, 255, 255),)
-            )
+            if white_outline:
+                img = self.add_outline(
+                    img, threshold=0, stroke_size=6, colors=((255, 255, 255),)
+                )
+            else:
+                img = self.add_outline(
+                    img, threshold=0, stroke_size=6, colors=((0, 255, 0),)
+                )
             scaled_img = rescale_img(np.array(img))
             write_img(scaled_img, out_img_path, alpha=True)
         else:
