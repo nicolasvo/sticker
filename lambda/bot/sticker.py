@@ -38,6 +38,11 @@ def create_sticker(update: Update, segment, reply_data: str) -> None:
         elif reply_data == "3":
             print("Sticker with model 3")
             segment_modnet(file_path, out_path)
+        elif reply_data == "4":
+            print("Sticker without model")
+            img = load_img(file_path)
+            img = rescale_img(img)
+            write_img(img, out_path)
         try:
             bot.get_sticker_set(user.sticker_set_name)
             add_sticker(user, out_path)
@@ -97,6 +102,12 @@ def handle_image(update: Update, segment) -> None:
                 images.append(out_path)
                 print("Photo segmented with model 3")
 
+                out_path = f"{tmpdirname}/please_{file_id}.png"
+                img = load_img(file_path)
+                img = rescale_img(img)
+                write_img(img, out_path)
+                images.append(out_path)
+
             try:
                 medias = [InputMediaPhoto(open(path, "rb")) for path in images]
                 keyboard = [
@@ -104,7 +115,7 @@ def handle_image(update: Update, segment) -> None:
                         InlineKeyboardButton(
                             emoji_number(n + 1), callback_data=str(n + 1)
                         )
-                        for n in range(3)
+                        for n in range(len(images))
                     ]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
