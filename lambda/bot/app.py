@@ -5,7 +5,7 @@ import random
 from telegram import Bot, Update
 
 from alter_background import AlterBackground
-from emojis import get_emojis, get_animated_emojis
+from emojis import get_emojis
 from sticker import create_sticker, delete_sticker, handle_image
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
@@ -23,11 +23,6 @@ def handler(event, context):
         reply = json.loads(json.loads(raw))
         if not reply.get("callback_query"):
             if update.message.photo or update.message.document:
-                bot.send_message(
-                    update.message.chat_id,
-                    f"{random.choice(get_animated_emojis())}",
-                    reply_to_message_id=update.message.message_id,
-                )
                 process_image = True
             elif update.message.text and update.message.text == "/delete":
                 delete_sticker(update)

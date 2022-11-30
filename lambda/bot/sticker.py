@@ -10,6 +10,7 @@ from telegram import (
     InlineKeyboardMarkup,
 )
 
+from emojis import emoji_number
 from image import rescale_img, load_img, write_img
 from models import segment_modnet, segment_u2net
 from user import User
@@ -100,19 +101,21 @@ def handle_image(update: Update, segment) -> None:
                 medias = [InputMediaPhoto(open(path, "rb")) for path in images]
                 keyboard = [
                     [
-                        InlineKeyboardButton(str(n + 1), callback_data=str(n + 1))
+                        InlineKeyboardButton(
+                            emoji_number(n + 1), callback_data=str(n + 1)
+                        )
                         for n in range(3)
                     ]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
-                media_message = bot.send_media_group(
+                bot.send_media_group(
                     user.chat_id,
                     medias,
                     reply_to_message_id=update.message.message_id,
                 )
                 bot.send_message(
                     chat_id=user.chat_id,
-                    text="Select a picture",
+                    text="Choose a picture 💬",
                     reply_markup=reply_markup,
                     reply_to_message_id=update.message.message_id,
                 )
