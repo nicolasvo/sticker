@@ -1,6 +1,6 @@
 resource "aws_sqs_queue" "queue" {
   name                       = var.queue_name
-  max_message_size           = 2048
+  max_message_size           = 4096
   message_retention_seconds  = 300
   visibility_timeout_seconds = 600
 }
