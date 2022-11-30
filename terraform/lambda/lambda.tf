@@ -24,7 +24,8 @@ resource "aws_lambda_function" "bot_producer" {
 
   environment {
     variables = {
-      QUEUE_NAME = var.queue_name
+      BOT_API_TOKEN = var.BOT_API_TOKEN
+      QUEUE_NAME    = var.queue_name
     }
   }
 
