@@ -22,18 +22,21 @@ def handler(event, context):
     body = json.loads(event["body"])
     if body.get("callback_query"):
         message_id = body["callback_query"]["message"]["message_id"]
+        reply_message_id = body["callback_query"]["message"]["reply_to_message"][
+            "message_id"
+        ]
         chat_id = body["callback_query"]["message"]["chat"]["id"]
         reply_data = body["callback_query"]["data"]
         bot.edit_message_text(
             message_id=message_id,
             chat_id=chat_id,
-            text=f"{emoji_number(int(reply_data))}",
+            text=f"You chose {emoji_number(int(reply_data))}",
             reply_markup=None,
         )
         bot.send_message(
             chat_id,
             f"{random.choice(get_animated_emojis())}",
-            reply_to_message_id=message_id,
+            reply_to_message_id=reply_message_id,
         )
 
     return 200
