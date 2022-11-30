@@ -1,15 +1,23 @@
-import os
 import hashlib
+import os
+
+from telegram import Update
 
 NUMERO_GAGNANT = os.getenv("NUMERO_GAGNANT")
 
 
 class User:
-    def __init__(self, update, bot):
-        self.chat_id = update.message.chat_id
+    def __init__(self, update: Update, bot, reply=False):
+        # TODO: remove chat_id
+        if reply:
+            self.chat_id = update.message.chat.id
+            self.id = update.message.chat.id
+            self.firstname = update.message.chat.first_name
+        else:
+            self.chat_id = update.message.chat_id
+            self.id = update.message.from_user.id
+            self.firstname = update.message.from_user.first_name
         self.bot_username = bot.username
-        self.id = update.message.from_user.id
-        self.firstname = update.message.from_user.first_name
         # TODO: remove hack
         if len(str(self.id)) > 9:
             self.hash = hashlib.md5(
