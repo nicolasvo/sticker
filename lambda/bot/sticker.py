@@ -45,7 +45,7 @@ def create_sticker(update: Update, segment, reply_data: str) -> None:
             bot.send_sticker(
                 user.chat_id,
                 sticker_set.stickers[-1],
-                reply_to_message_id=update.message.message_id,
+                reply_to_message_id=update.message.reply_to_message.message_id,
             )
         except Exception as e:
             add_sticker_pack(user, out_path)
