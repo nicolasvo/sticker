@@ -19,8 +19,6 @@ def handler(event, context):
     update = json.dumps(event["body"])
     response = queue.send_message(MessageBody=update)
     print(response)
-    print(event["body"])
-    print(type(event["body"]))
     body = json.loads(event["body"])
     if body.get("callback_query"):
         message_id = body["callback_query"]["message"]["message_id"]

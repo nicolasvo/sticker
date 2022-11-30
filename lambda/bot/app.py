@@ -14,7 +14,6 @@ bot = Bot(BOT_API_TOKEN)
 
 def handler(event, context):
     try:
-        print(f"[debug] event: {event}")
         process_image = False
         process_sticker = False
         _update = json.loads(json.loads(event["Records"][0]["body"]))
