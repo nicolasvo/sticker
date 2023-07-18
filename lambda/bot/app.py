@@ -23,11 +23,13 @@ def handler(event, context):
         if not reply.get("callback_query"):
             user_id = update.effective_user.id
             table = dynamodb.Table("sticker-sam") # TODO: dev variabilize
-            response = table.get_item(Key={"UserId": user_id})
+            response = table.get_item(Key={"UserId": str(user_id)})
             item = None
             if response.get("Item"):
                 item = response["Item"]
                 print(f"Record: {item}")
+            else: # TODO: dev debug
+                print(f"Record does not exist for user {user_id}")
 
             # new photo
             if update.message.photo or update.message.document:
