@@ -22,6 +22,7 @@ def handler(event, context):
         reply = json.loads(json.loads(raw))
         if not reply.get("callback_query"):
             user_id = update.effective_user.id
+            print(f"user id: {user_id}")
             table = dynamodb.Table("sticker-sam") # TODO: dev variabilize
             response = table.get_item(Key={"UserId": str(user_id)})
             item = None
