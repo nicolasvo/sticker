@@ -1,0 +1,6 @@
+boto3
+python-telegram-bot
+numpy
+opencv-python
+Pillow==9.5.0
+git+https://github.com/luca-medeiros/lang-segment-anything.git  

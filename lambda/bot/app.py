@@ -2,29 +2,44 @@ import json
 import os
 import random
 
+import boto3
 from telegram import Bot, Update
 
-from alter_background import AlterBackground
 from emojis import get_emojis
 from sticker import create_sticker, delete_sticker, handle_image
 
+
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
+dynamodb = boto3.resource('dynamodb')
 
 
 def handler(event, context):
     try:
-        process_image = False
-        process_sticker = False
         _update = json.loads(json.loads(event["Records"][0]["body"]))
         update = Update.de_json(_update, bot)
         raw = event["Records"][0]["body"]
         reply = json.loads(json.loads(raw))
         if not reply.get("callback_query"):
+            user_id = update.effective_user.id
+            table = dynamodb.Table("sticker-sam") # TODO: dev variabilize
+            response = table.get_item(Key={"UserId": user_id})
+            item = None
+            if response.get("Item"):
+                item = response["Item"]
+                print(f"Record: {item}")
+
+            # new photo
             if update.message.photo or update.message.document:
-                process_image = True
+                print("User sent a new photo")
+                
+            # delete sticker
             elif update.message.text and update.message.text == "/delete":
                 delete_sticker(update)
+
+            # new prompt
+            elif update.message.text and item.get("FileId"):
+                print("User sent a new prompt")
             else:
                 bot.send_message(
                     update.message.chat_id,
@@ -39,20 +54,7 @@ def handler(event, context):
                 "message": reply["callback_query"]["message"],
             }
             update = Update.de_json(_update, bot)
-            process_image = True
-            process_sticker = True
-        if process_image:
-            if "segment" in globals():
-                print("Model already loaded")
-            else:
-                print("Loading model")
-                global segment
-                segment = AlterBackground(model_type="pb")
-                segment.load_pascalvoc_model("xception_pascalvoc.pb")
-            if process_sticker:
-                create_sticker(update, segment, reply_data)
-            else:
-                handle_image(update, segment)
+            
 
         return 200
     except Exception as e:
