@@ -14,7 +14,7 @@ bot = Bot(BOT_API_TOKEN)
 dynamodb = boto3.resource('dynamodb')
 
 
-def handler(event, context):
+async def handler(event, context):
     try:
         _update = json.loads(json.loads(event["Records"][0]["body"]))
         update = Update.de_json(_update, bot)
@@ -44,7 +44,7 @@ def handler(event, context):
             elif update.message.text and item and item.get("FileId"):
                 print("User sent a new prompt")
             else:
-                bot.send_message(
+                await bot.send_message(
                     update.message.chat_id,
                     f"Send me a picture! {random.choice(get_emojis())}",
                 )
