@@ -41,7 +41,7 @@ def handler(event, context):
                 delete_sticker(update)
 
             # new prompt
-            elif update.message.text and item.get("FileId"):
+            elif update.message.text and item and item.get("FileId"):
                 print("User sent a new prompt")
             else:
                 bot.send_message(
