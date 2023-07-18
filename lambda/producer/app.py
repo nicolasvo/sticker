@@ -5,7 +5,7 @@ import random
 import boto3
 from telegram import Bot
 
-from emojis import emoji_number, get_animated_emojis
+from emojis import get_animated_emojis
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
@@ -27,16 +27,27 @@ def handler(event, context):
         ]
         chat_id = body["callback_query"]["message"]["chat"]["id"]
         reply_data = body["callback_query"]["data"]
+        print(f"callback query: {reply_data }")
         bot.edit_message_text(
             message_id=message_id,
             chat_id=chat_id,
-            text=f"You chose {emoji_number(int(reply_data))}",
-            reply_markup=None,
+            text=f"You chose {reply_data}",
         )
-        bot.send_message(
-            chat_id,
-            f"{random.choice(get_animated_emojis())}",
-            reply_to_message_id=reply_message_id,
-        )
+    
+    # dynamodb = boto3.resource('dynamodb')
+
+    # table = dynamodb.Table("sticker-sam")
+    # response = table.get_item(Key={'UserId': '444'})
+    # item = response['Item']
+    # print(f"i read: {item}")
+
+    # item = {
+    #     "UserId": {"N": "123"},
+    #     "FileId": {"S": "something"},
+    #     "SegmentedPhoto": {"S": "bobo"},
+    # }
+    # response = dynamodb.put_item(
+    #     TableName="sticker-sam", Item=item  # Replace with your actual table name
+    # )
 
     return 200

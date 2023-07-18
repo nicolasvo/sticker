@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.9
+FROM public.ecr.aws/lambda/python:3.10
 
 COPY requirements.txt .
 RUN --mount=type=cache,mode=0755,target=/root/.cache/pip pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
