@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "bot_producer" {
-  name                 = "sticker-producer"
-  image_tag_mutability = "IMMUTABLE"
+  name                 = "sticker-sam-producer"
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -8,8 +8,8 @@ resource "aws_ecr_repository" "bot_producer" {
 }
 
 resource "aws_ecr_repository" "bot" {
-  name                 = "sticker"
-  image_tag_mutability = "IMMUTABLE"
+  name                 = "sticker-sam"
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -17,8 +17,8 @@ resource "aws_ecr_repository" "bot" {
 }
 
 resource "aws_ecr_repository" "bot_down" {
-  name                 = "sticker-down"
-  image_tag_mutability = "IMMUTABLE"
+  name                 = "sticker-sam-down"
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
