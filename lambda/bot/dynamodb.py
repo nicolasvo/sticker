@@ -45,7 +45,7 @@ def upsert_item(user_id, message_id=None, file_id=None, segmented_photo=None):
     # If the update condition fails, create a new item
     if "Attributes" not in table.update_item(
         Key=key,
-        UpdateExpression="SET #mid = :message_id_val, #fid = :file_id_val, #sp = :segmented_photo_val"
+        UpdateExpression="SET #mid = :message_id_val, #fid = :file_id_val, #sp = :segmented_photo_val",
         ExpressionAttributeNames=expression_attribute_names,
         ExpressionAttributeValues=expression_attribute_values,
         ConditionExpression="attribute_not_exists(UserId)",  # Only create if UserId does not exist
