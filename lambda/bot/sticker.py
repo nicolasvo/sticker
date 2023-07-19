@@ -10,8 +10,6 @@ from telegram import (
     InlineKeyboardMarkup,
 )
 
-from telegram.constants import ChatAction
-
 import cv2
 import numpy as np
 from PIL import Image
@@ -28,8 +26,6 @@ bot = Bot(BOT_API_TOKEN)
 
 
 def segment_photo2(update: Update) -> None:
-    update.message.reply_chat_action(ChatAction.TYPING)
-
     if not update.message.caption:
         update.message.reply_text("Please add a caption to the picture")
     else:
