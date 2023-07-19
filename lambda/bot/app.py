@@ -6,12 +6,12 @@ import boto3
 from telegram import Bot, Update
 
 from emojis import get_emojis
-from sticker import create_sticker, delete_sticker, handle_image
-
+from sticker import delete_sticker, segment_photo2
+from dynamodb import get_item
 
 BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
 bot = Bot(BOT_API_TOKEN)
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource("dynamodb")
 
 
 def handler(event, context):
@@ -23,19 +23,17 @@ def handler(event, context):
         if not reply.get("callback_query"):
             user_id = update.effective_user.id
             print(f"user id: {user_id}")
-            table = dynamodb.Table("sticker-sam") # TODO: dev variabilize
-            response = table.get_item(Key={"UserId": str(user_id)})
-            item = None
-            if response.get("Item"):
-                item = response["Item"]
+            item = get_item(user_id)
+            if item:
                 print(f"Record: {item}")
-            else: # TODO: dev debug
+            else:  # TODO: dev debug
                 print(f"Record does not exist for user {user_id}")
 
             # new photo
             if update.message.photo or update.message.document:
                 print("User sent a new photo")
-                
+                segment_photo2(update)
+
             # delete sticker
             elif update.message.text and update.message.text == "/delete":
                 delete_sticker(update)
@@ -57,7 +55,6 @@ def handler(event, context):
                 "message": reply["callback_query"]["message"],
             }
             update = Update.de_json(_update, bot)
-            
 
         return 200
     except Exception as e:

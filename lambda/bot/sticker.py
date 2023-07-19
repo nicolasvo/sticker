@@ -26,11 +26,6 @@ bot = Bot(BOT_API_TOKEN)
 
 
 def segment_photo2(update: Update) -> None:
-    if not update.message.caption:
-        update.message.reply_text("Please add a caption to the picture")
-    else:
-        print(f"caption: {update.message.caption}")  # TODO: dev remove to anonymize
-
     photo_id = update.message.photo[-1].file_id
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
         photo_path = f"{tmpdirname}/{photo_id}.jpeg"
