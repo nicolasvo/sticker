@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "lambda" {
 
 data "aws_iam_policy_document" "dynamodb" {
   statement {
-
+    sid = "dynamodball"
     actions = [
       "dynamodb:List*",
       "dynamodb:DescribeReservedCapacity*",
@@ -71,7 +71,7 @@ data "aws_iam_policy_document" "dynamodb" {
     ]
   }
   statement {
-
+    sid = "dynamodbtable"
     actions = [
       "dynamodb:*"
     ]
@@ -92,13 +92,15 @@ resource "aws_iam_role" "lambda" {
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/AmazonSQSFullAccess",
+    aws_iam_policy.dynamodb.arn
   ]
 }
 
-resource "aws_iam_role_policy_attachment" "dynamodb" {
-  role       = aws_iam_role.lambda.name
-  policy_arn = aws_iam_policy.dynamodb.arn
-}
+# resource "aws_iam_role_policy_attachment" "dynamodb" {
+#   role       = aws_iam_role.lambda.name
+#   policy_arn = aws_iam_policy.dynamodb.arn
+#   depends_on = [ aws_lambda_function.bot ]
+# }
 
 resource "aws_lambda_function_url" "bot_producer" {
   function_name      = aws_lambda_function.bot_producer.function_name
