@@ -1,65 +1,65 @@
+import asyncio
 import json
 import os
-import random
 
-import boto3
 from telegram import Bot, Update
 
-from emojis import get_emojis
-from sticker import delete_sticker, segment_photo2
-from dynamodb import get_item
+from dynamodb import get_item, upsert_item
+from sticker import segment_photo2, make_sticker2
 
-BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
-bot = Bot(BOT_API_TOKEN)
-dynamodb = boto3.resource("dynamodb")
+loop = asyncio.get_event_loop()
 
 
-def handler(event, context):
+async def main(event, context):
     try:
-        _update = json.loads(json.loads(event["Records"][0]["body"]))
-        update = Update.de_json(_update, bot)
-        raw = event["Records"][0]["body"]
-        reply = json.loads(json.loads(raw))
-        if not reply.get("callback_query"):
+        BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
+        bot = Bot(BOT_API_TOKEN)
+        print(f"event: {event}")
+        print(f"body: {event['body']}")
+        update = json.loads(event["body"])
+        update = Update.de_json(update, bot)
+        print(update)
+
+        if not update.callback_query:
             user_id = update.effective_user.id
-            print(f"user id: {user_id}")
             item = get_item(user_id)
-            if item:
-                print(f"Record: {item}")
-            else:  # TODO: dev debug
-                print(f"Record does not exist for user {user_id}")
+
+            # delete
+            # send the sticker you want to delete
 
             # new photo
             if update.message.photo or update.message.document:
                 print("User sent a new photo")
-                segment_photo2(update)
-
-            # delete sticker
-            elif update.message.text and update.message.text == "/delete":
-                delete_sticker(update)
+                upsert_item(
+                    user_id, update.message.id, update.message.photo[-1].file_id, None
+                )
 
             # new prompt
             elif update.message.text and item and item.get("FileId"):
-                print("User sent a new prompt")
+                print(f"User sent a new prompt: {update.message.text}")
+                await segment_photo2(update)
+
+            # anything else
             else:
-                bot.send_message(
+                await bot.send_message(
                     update.message.chat_id,
-                    f"Send me a picture! {random.choice(get_emojis())}",
+                    f"Send me a picture la!",
                 )
         else:
-            raw = event["Records"][0]["body"]
-            reply = json.loads(json.loads(raw))
-            reply_data = reply["callback_query"]["data"]
-            _update = {
-                "update_id": reply["update_id"],
-                "message": reply["callback_query"]["message"],
-            }
-            update = Update.de_json(_update, bot)
+            # user confirms sticker
+            answer = update.callback_query.data
+            if answer == "yes":
+                print("User confirmed sticker creation")
+                make_sticker2(update)
 
-        return 200
     except Exception as e:
-        print(f"Error: {e}")
-        bot.send_message(
-            update.message.chat_id, f"🧨", reply_to_message_id=update.message.message_id
-        )
-        return 500
+        print(e)
+        raise e
+    finally:
+        return {
+            "statusCode": 200,
+        }
+
+
+def lambda_handler(event, context):
+    return loop.run_until_complete(main(event, context))
