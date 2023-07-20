@@ -8,3 +8,5 @@ __pycache__/
 .idea
 requirements_*
 *.ipynb
+Makefile
+Pipfile.lock
