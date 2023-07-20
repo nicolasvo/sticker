@@ -26,7 +26,7 @@ def query_builder(**kwargs):
 def upsert_item(user_id, message_id=None, file_id=None, segmented_photo=None):
     item = get_item(user_id)
     if item:
-        print("item does already exists")
+        print("item does already exists") # TODO: dev remove
         table = dynamodb.Table(table_name)
         query, expression = query_builder(
             message_id=message_id, file_id=file_id, segmented_photo=segmented_photo
@@ -49,7 +49,7 @@ def upsert_item(user_id, message_id=None, file_id=None, segmented_photo=None):
         # )
 
     if not item:
-        print("item does not exist yet")
+        print("item does not exist yet") # TODO: dev remove
         new_item = {
             "UserId": user_id,
             "MessageId": message_id,

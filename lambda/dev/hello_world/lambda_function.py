@@ -4,6 +4,9 @@ import os
 
 from telegram import Bot, Update
 
+from dynamodb import get_item, upsert_item
+from sticker import segment_photo2
+
 loop = asyncio.get_event_loop()
 
 
@@ -14,20 +17,31 @@ async def main(event, context):
         update = json.loads(event["body"])
         update = Update.de_json(update, bot)
         print(update)
-        await bot.send_message(
-            update.message.chat_id,
-            f"Send me a picture la! {update.message.text}",
-        )
 
-        user_id = update.message.from_user.id
+        user_id = update.effective_user.id
+        item = get_item(user_id)
+
+        # delete
+        # send the sticker you want to delete
+
         # new photo
+        if update.message.photo or update.message.document:
+            print("User sent a new photo")
+            upsert_item(
+                user_id, update.message.id, update.message.photo[-1].file_id, None
+            )
 
         # new prompt
-
-        # delete # send the sticker you want to delete
+        elif update.message.text and item and item.get("FileId"):
+            print(f"User sent a new prompt: {update.message.text}")
+            await segment_photo2(update)
 
         # anything else
-    
+        else:
+            await bot.send_message(
+                update.message.chat_id,
+                f"Send me a picture la!",
+            )
 
     except Exception as e:
         print(e)
