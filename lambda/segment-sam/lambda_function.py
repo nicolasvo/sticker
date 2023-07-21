@@ -1,24 +1,22 @@
+import base64
 import json
 import logging
 
-from PIL import Image
-
+from segment import segment
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+image_path = "/var/task/input.jpeg"
+output_path = "/var/task/output.png"
 
 
 def image_to_base64(image_path):
-    import base64
-
     with open(image_path, "rb") as image_file:
         encoded_image = base64.b64encode(image_file.read())
         return encoded_image.decode("utf-8")
 
 
 def base64_to_image(base64_string, output_file_path):
-    import base64
-
     with open(output_file_path, "wb") as image_file:
         decoded_image = base64.b64decode(base64_string)
         image_file.write(decoded_image)
@@ -27,18 +25,21 @@ def base64_to_image(base64_string, output_file_path):
 def lambda_handler(event, context):
     try:
         image = event["image"]
-        output_path = "/var/task/input.jpeg"
-        base64_to_image(image, output_path)
+        text_prompt = event["text_prompt"]
+        image_path = base64_to_image(image, output_path)
+        masks, boxes, phrases, logits = segment(image_path, text_prompt)
+        image = image_to_base64(output_path)
 
     except Exception as e:
         print(e)
         raise e
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps(
-            {
-                "message": "hello world",
-            }
-        ),
-    }
+    return json.dumps(
+        {
+            "image": image,
+            "masks": masks,
+            "boxes": boxes,
+            "phrases": phrases,
+            "logits": logits,
+        }
+    )
