@@ -12,4 +12,4 @@ payload = {
 }
 
 
-r = requests.post("http://localhost:9000/2015-03-31/functions/function/invocations", json=payload)
+r = requests.post("http://localhost:9000/2015-03-31/functions/function/invocations", json=payload, timeout=600)
