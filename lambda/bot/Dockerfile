@@ -1,7 +1,7 @@
 FROM public.ecr.aws/lambda/python:3.10
 
 RUN yum install -y gcc git mesa-libGL
-RUN pip install python-telegram-bot==13.10 boto3 torch torchvision numpy opencv-python Pillow==9.5.0 
+RUN pip install python-telegram-bot boto3 torch torchvision numpy opencv-python Pillow==9.5.0 
 RUN pip install -U git+https://github.com/luca-medeiros/lang-segment-anything.git 
 
 # COPY app.py user.py sticker.py image.py dynamodb.py emojis.py ${LAMBDA_TASK_ROOT}
