@@ -26,7 +26,7 @@ def lambda_handler(event, context):
     try:
         image = event["image"]
         text_prompt = event["text_prompt"]
-        image_path = base64_to_image(image, output_path)
+        base64_to_image(image, image_path)
         masks, boxes, phrases, logits = segment(image_path, text_prompt)
         image = image_to_base64(output_path)
 
