@@ -1,35 +1,12 @@
-resource "aws_cloudwatch_log_group" "bot_producer" {
-  name = "/aws/lambda/${aws_lambda_function.bot_producer.function_name}"
-
-  retention_in_days = 7
-}
-
 resource "aws_cloudwatch_log_group" "bot" {
   name = "/aws/lambda/${aws_lambda_function.bot.function_name}"
 
   retention_in_days = 7
 }
 
-
-resource "aws_lambda_function" "bot_producer" {
-  function_name = "sticker-sam-producer"
-  timeout       = 60
-  package_type  = "Image"
-  image_uri     = "${data.terraform_remote_state.ecr.outputs.repository_url_bot_producer}:${var.image_tag_bot_producer}"
-
-  environment {
-    variables = {
-      BOT_API_TOKEN = var.BOT_API_TOKEN
-      QUEUE_NAME    = var.queue_name
-    }
-  }
-
-  role = aws_iam_role.lambda.arn
-}
-
 resource "aws_lambda_function" "bot" {
   function_name = "sticker-sam"
-  memory_size   = 6000
+  memory_size   = 8000
   timeout       = 300
   package_type  = "Image"
   image_uri     = "${data.terraform_remote_state.ecr.outputs.repository_url_bot}:${var.image_tag_bot}"
@@ -87,27 +64,16 @@ resource "aws_iam_policy" "dynamodb" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name               = "sticker-sam-tf"
+  name               = "sticker-sam"
   assume_role_policy = data.aws_iam_policy_document.lambda.json
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    "arn:aws:iam::aws:policy/AmazonSQSFullAccess",
     aws_iam_policy.dynamodb.arn
   ]
 }
 
-# resource "aws_iam_role_policy_attachment" "dynamodb" {
-#   role       = aws_iam_role.lambda.name
-#   policy_arn = aws_iam_policy.dynamodb.arn
-#   depends_on = [ aws_lambda_function.bot ]
-# }
 
-resource "aws_lambda_function_url" "bot_producer" {
-  function_name      = aws_lambda_function.bot_producer.function_name
+resource "aws_lambda_function_url" "bot" {
+  function_name      = aws_lambda_function.bot.function_name
   authorization_type = "NONE"
-}
-
-resource "aws_lambda_event_source_mapping" "bot" {
-  event_source_arn = aws_sqs_queue.queue.arn
-  function_name    = aws_lambda_function.bot.arn
 }
