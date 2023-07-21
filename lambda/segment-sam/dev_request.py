@@ -8,7 +8,8 @@ def image_to_base64(image_path):
 
 import requests
 payload = {
-    "image": image_to_base64("IMG_3301.jpeg")
+    "image": image_to_base64("IMG_3301.jpeg"),
+    "text_prompt": "person",
 }
 
 
