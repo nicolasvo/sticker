@@ -14,11 +14,7 @@ variable "image_tag_bot" {
   type = string
 }
 
-#variable "image_tag_bot_down" {
-#  type = string
-#}
-
-variable "image_tag_bot_producer" {
+variable "image_tag_segment_sam" {
   type = string
 }
 
