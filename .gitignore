@@ -12,3 +12,5 @@ Makefile
 Pipfile.lock
 .vscode/
 *.jpeg
+*.png
+weights/
