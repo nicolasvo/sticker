@@ -1,11 +1,7 @@
-output "repository_url_bot_producer" {
-  value = aws_ecr_repository.bot_producer.repository_url
-}
-
 output "repository_url_bot" {
   value = aws_ecr_repository.bot.repository_url
 }
 
-output "repository_url_bot_down" {
-  value = aws_ecr_repository.bot_down.repository_url
+output "repository_url_segment_sam" {
+  value = aws_ecr_repository.segment_sam.repository_url
 }
