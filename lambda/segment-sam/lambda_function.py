@@ -6,8 +6,8 @@ from segment import segment
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-image_path = "/var/task/input.jpeg"
-output_path = "/var/task/output.png"
+image_path = "/tmp/input.jpeg"
+output_path = "/tmp/output.png"
 
 
 def image_to_base64(image_path):
@@ -24,8 +24,9 @@ def base64_to_image(base64_string, output_file_path):
 
 def lambda_handler(event, context):
     try:
-        image = event["image"]
-        text_prompt = event["text_prompt"]
+        body = json.loads(event["body"])
+        image = body["image"]
+        text_prompt = body["text_prompt"]
         base64_to_image(image, image_path)
         masks, boxes, phrases, logits = segment(image_path, text_prompt)
         image = image_to_base64(output_path)
