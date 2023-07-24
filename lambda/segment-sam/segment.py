@@ -8,13 +8,11 @@ from lang_sam.utils import draw_image
 output_path = "/tmp/output.png"
 image_path = "/tmp/input.jpeg"
 
+
 def segment(image_path, text_prompt):
     # TODO: if no text prompt, segment everything
-    try:
-        masks, boxes, phrases, logits = _segment(image_path, text_prompt)
-    except Exception as e:
-        print("some worries")
-        return masks, boxes, phrases, logits
+    masks, boxes, phrases, logits = _segment(image_path, text_prompt)
+    return masks, boxes, phrases, logits
 
 
 def _segment(photo_path, text_prompt):
@@ -28,6 +26,3 @@ def _segment(photo_path, text_prompt):
     cv2.imwrite(output_path, cv2.cvtColor(image_draw, cv2.COLOR_RGBA2BGRA))
 
     return masks, boxes, phrases, logits
-
-segment(image_path, "person")
-print("donezo")

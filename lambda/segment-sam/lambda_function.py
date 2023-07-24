@@ -30,6 +30,9 @@ def lambda_handler(event, context):
         base64_to_image(image, image_path)
         masks, boxes, phrases, logits = segment(image_path, text_prompt)
         image = image_to_base64(output_path)
+        masks_ = masks.tolist()
+        boxes_ = boxes.tolist()
+        logits_ = logits.tolist()
 
     except Exception as e:
         print(e)
@@ -38,9 +41,9 @@ def lambda_handler(event, context):
     return json.dumps(
         {
             "image": image,
-            "masks": masks,
-            "boxes": boxes,
+            "masks": masks_,
+            "boxes": boxes_,
             "phrases": phrases,
-            "logits": logits,
+            "logits": logits_,
         }
     )
