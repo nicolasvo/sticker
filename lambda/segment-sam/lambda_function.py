@@ -29,11 +29,17 @@ def copy_s3_folder_to_lambda(s3_bucket, s3_folder_key):
             # Get the object's key (filename)
             object_key = item["Key"]
 
-            # Create a local file path within /tmp directory for the object
-            local_file_path = os.path.join("/tmp/.cache")
+            # Create a local file path within /tmp/.cache directory for the object
+            local_file_path = os.path.join(
+                "/tmp/.cache", os.path.relpath(object_key, s3_folder_key)
+            )
+
+            # Create the directory structure in /tmp/.cache if it doesn't exist
+            os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
 
             # Download the object to the local file path
             s3_client.download_file(s3_bucket, object_key, local_file_path)
+            print(f"donezo: {object_key}")
 
 
 def image_to_base64(image_path):
