@@ -11,8 +11,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 image_path = "/tmp/input.jpeg"
 output_path = "/tmp/output.png"
-bucket = os.getenv("BUCKET")
-bucket_folder = os.getenv("BUCKET_FOLDER")
+bucket_weights = os.getenv("BUCKET_WEIGHTS")
+bucket_weights_folder = os.getenv("BUCKET_WEIGHTS_FOLDER")
 
 
 def copy_s3_folder_to_lambda(s3_bucket, s3_folder_key):
@@ -39,7 +39,6 @@ def copy_s3_folder_to_lambda(s3_bucket, s3_folder_key):
 
             # Download the object to the local file path
             s3_client.download_file(s3_bucket, object_key, local_file_path)
-            print(f"donezo: {object_key}")
 
 
 def image_to_base64(image_path):
@@ -56,12 +55,12 @@ def base64_to_image(base64_string, output_file_path):
 
 def lambda_handler(event, context):
     try:
-        copy_s3_folder_to_lambda(bucket, bucket_folder)
+        copy_s3_folder_to_lambda(bucket_weights, bucket_weights_folder)
         body = json.loads(event["body"])
         image = body["image"]
         text_prompt = body["text_prompt"]
         base64_to_image(image, image_path)
-        masks, boxes, phrases, logits = segment(image_path, text_prompt)
+        image_url, masks, boxes, phrases, logits = segment(image_path, text_prompt)
         image = image_to_base64(output_path)
         masks_ = masks.tolist()
         boxes_ = boxes.tolist()
@@ -73,7 +72,7 @@ def lambda_handler(event, context):
 
     return json.dumps(
         {
-            "image": image,
+            "image": image_url,
             "masks": masks_,
             "boxes": boxes_,
             "phrases": phrases,
