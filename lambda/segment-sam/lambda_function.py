@@ -90,9 +90,9 @@ def lambda_handler(event, context):
     return json.dumps(
         {
             "image": image_url,
-            "masks": masks_,
-            "boxes": boxes_,
-            "phrases": phrases,
-            "logits": logits_,
+            # "masks": masks_,
+            # "boxes": boxes_,
+            # "phrases": phrases,
+            # "logits": logits_,
         }
     )
