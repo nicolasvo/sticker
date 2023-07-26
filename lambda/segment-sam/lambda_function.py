@@ -30,7 +30,7 @@ def copy_s3_folder_to_lambda(s3_bucket, s3_folder_key):
             object_key = item["Key"]
 
             # Create a local file path within /tmp directory for the object
-            local_file_path = os.path.join("/tmp", os.path.basename(object_key))
+            local_file_path = os.path.join("/tmp/.cache")
 
             # Download the object to the local file path
             s3_client.download_file(s3_bucket, object_key, local_file_path)
