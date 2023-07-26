@@ -13,6 +13,7 @@ image_path = "/tmp/input.jpeg"
 output_path = "/tmp/output.png"
 bucket_weights = os.getenv("BUCKET_WEIGHTS")
 bucket_weights_folder = os.getenv("BUCKET_WEIGHTS_FOLDER")
+initialized = False
 
 
 def copy_s3_folder_to_lambda(s3_bucket, s3_folder_key):
@@ -53,9 +54,25 @@ def base64_to_image(base64_string, output_file_path):
         image_file.write(decoded_image)
 
 
+def initialize_once():
+    # Put your one-time initialization code here
+    print("Initialization code running...")
+    copy_s3_folder_to_lambda(bucket_weights, bucket_weights_folder)
+    # For example, you might want to establish connections, load models, or set up configurations
+
+    # Set the global variable to True to mark the initialization as done
+    global initialized
+    initialized = True
+
+
 def lambda_handler(event, context):
     try:
-        copy_s3_folder_to_lambda(bucket_weights, bucket_weights_folder)
+        global initialized
+
+        # Check if initialization has been done
+        if not initialized:
+            # Run the initialization code
+            initialize_once()
         body = json.loads(event["body"])
         image = body["image"]
         text_prompt = body["text_prompt"]

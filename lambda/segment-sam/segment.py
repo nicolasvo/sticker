@@ -34,8 +34,8 @@ def upload_file_and_get_presigned_url(bucket_name, file_key, local_file_path):
 
 def segment(image_path, text_prompt):
     # TODO: if no text prompt, segment everything
-    masks, boxes, phrases, logits = _segment(image_path, text_prompt)
-    return masks, boxes, phrases, logits
+    image_url, masks, boxes, phrases, logits = _segment(image_path, text_prompt)
+    return image_url, masks, boxes, phrases, logits
 
 
 def _segment(photo_path, text_prompt):
