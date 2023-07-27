@@ -5,7 +5,6 @@ import os
 import zlib
 
 import boto3
-import torch
 import numpy as np
 
 from segment import segment
@@ -95,6 +94,7 @@ def lambda_handler(event, context):
     return json.dumps(
         {
             "masks": compressed_base64,
+            "masks_shape": masks.shape,
             "boxes": boxes_,
             "phrases": phrases,
             "logits": logits_,
