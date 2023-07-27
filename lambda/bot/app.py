@@ -12,14 +12,14 @@ from sticker import request_segment
 loop = asyncio.get_event_loop()
 
 
-def triggering_lambda(event, context, body):
+def trigger_lambda(event, context):
     client = boto3.client("lambda")
     response = client.invoke(
         FunctionName="sticker-sam",
         InvocationType="Event",  # Asynchronous invocation
         Payload=json.dumps(
             {
-                "bizarre": {"body": body},
+                "bizarre": {"body": event},
             }
         ),  # Payload can be a JSON object or any data to pass to the target Lambda
     )
@@ -68,8 +68,7 @@ async def main(event, context):
             elif update.message.text and item and item.get("FileId"):
                 print(f"User sent a new prompt: {update.message.text}")
                 await update.message.reply_text("Analyzing picture 🧠")
-
-                # await request_segment(update, update.message.text)
+                trigger_lambda(event["body"], context)
 
             # anything else
             else:
