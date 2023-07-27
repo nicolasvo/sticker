@@ -2,8 +2,11 @@ import base64
 import json
 import logging
 import os
+import zlib
 
 import boto3
+import torch
+import numpy as np
 
 from segment import segment
 
@@ -77,11 +80,13 @@ def lambda_handler(event, context):
         image = body["image"]
         text_prompt = body["text_prompt"]
         base64_to_image(image, image_path)
-        image_url, masks, boxes, phrases, logits = segment(image_path, text_prompt)
-        image = image_to_base64(output_path)
-        masks_ = masks.tolist()
+        masks, boxes, phrases, logits = segment(image_path, text_prompt)
+        # masks_ = masks.tolist()
         boxes_ = boxes.tolist()
         logits_ = logits.tolist()
+        image_mask_np = masks.numpy()
+        compressed_np = zlib.compress(image_mask_np.tobytes())
+        compressed_base64 = base64.b64encode(compressed_np).decode("utf-8")
 
     except Exception as e:
         print(e)
@@ -89,10 +94,9 @@ def lambda_handler(event, context):
 
     return json.dumps(
         {
-            "image": image_url,
-            # "masks": masks_,
-            # "boxes": boxes_,
-            # "phrases": phrases,
-            # "logits": logits_,
+            "masks": compressed_base64,
+            "boxes": boxes_,
+            "phrases": phrases,
+            "logits": logits_,
         }
     )

@@ -34,8 +34,8 @@ def upload_file_and_get_presigned_url(bucket_name, file_key, local_file_path):
 
 def segment(image_path, text_prompt):
     # TODO: if no text prompt, segment everything
-    image_url, masks, boxes, phrases, logits = _segment(image_path, text_prompt)
-    return image_url, masks, boxes, phrases, logits
+    masks, boxes, phrases, logits = _segment(image_path, text_prompt)
+    return masks, boxes, phrases, logits
 
 
 def _segment(photo_path, text_prompt):
@@ -46,7 +46,7 @@ def _segment(photo_path, text_prompt):
     image_array = np.asarray(image_pil)
     image_draw = image = draw_image(image_array, masks, boxes, labels)
     image = Image.fromarray(np.uint8(image)).convert("RGB")
-    cv2.imwrite(output_path, cv2.cvtColor(image_draw, cv2.COLOR_RGBA2BGRA))
-    image_url = upload_file_and_get_presigned_url(bucket_images, f"output.png", output_path)
+    # cv2.imwrite(output_path, cv2.cvtColor(image_draw, cv2.COLOR_RGBA2BGRA))
+    # image_url = upload_file_and_get_presigned_url(bucket_images, f"output.png", output_path)
 
-    return image_url, masks, boxes, phrases, logits
+    return masks, boxes, phrases, logits
