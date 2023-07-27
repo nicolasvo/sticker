@@ -10,7 +10,6 @@ from dynamodb import get_item, upsert_item
 from sticker import request_segment
 
 loop = asyncio.get_event_loop()
-bot_url = os.env("BOT_URL")
 
 
 def triggering_lambda(event, context, body):
