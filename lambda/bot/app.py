@@ -1,11 +1,14 @@
 import asyncio
 import json
 import os
+import requests
+import tempfile
 
 from telegram import Bot, Update
 
 from dynamodb import get_item, upsert_item
-from sticker import segment_photo2, make_sticker2
+from image import base64_to_image, image_to_base64
+from sticker import request_segment
 
 loop = asyncio.get_event_loop()
 
@@ -33,11 +36,15 @@ async def main(event, context):
                 upsert_item(
                     user_id, update.message.id, update.message.photo[-1].file_id, None
                 )
+                await bot.send_message(
+                    update.message.chat_id,
+                    f"Write what to cut from the picture 💬\nFor example: person left and chocolate cake",
+                )
 
             # new prompt
             elif update.message.text and item and item.get("FileId"):
                 print(f"User sent a new prompt: {update.message.text}")
-                await segment_photo2(update)
+                request_segment(update, update.message.text)
 
             # anything else
             else:
@@ -50,7 +57,6 @@ async def main(event, context):
             answer = update.callback_query.data
             if answer == "yes":
                 print("User confirmed sticker creation")
-                make_sticker2(update)
 
     except Exception as e:
         print(e)

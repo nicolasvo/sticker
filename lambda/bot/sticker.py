@@ -1,5 +1,12 @@
+import base64
+import json
 import os
+import requests
 import tempfile
+
+import numpy as np
+import torch
+import zlib
 
 from telegram import (
     Bot,
@@ -15,23 +22,40 @@ from telegram.ext import (
 )
 
 from dynamodb import get_item, delete_item, upsert_item
+from image import image_to_base64, postprocessing, upload_file_and_get_presigned_url
+
+segment_sam_url = os.getenv("SEGMENT_SAM_URL")
+bucket_images = os.getenv("BUCKET_IMAGES")
 
 
-async def segment_photo2(update: Update) -> None:
+async def request_segment(update: Update, text_prompt=None) -> None:
     BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
     bot = Bot(BOT_API_TOKEN)
     await bot.initialize()
-    await update.message.reply_text("Starto")
-    print("Starting segmentation")
+    await update.message.reply_text("Analyzing picture 🧠")
     user_id = update.effective_user.id
     item = get_item(user_id)
     photo_id = item.get("FileId")
     message_id = item.get("MessageId")
+
     with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
-        photo_path = f"{tmpdirname}/{photo_id}.jpeg"
-        photo_file = await bot.get_file(photo_id)
-        await photo_file.download_to_drive(custom_path=photo_path)
+        image_path = f"{tmpdirname}/{photo_id}.jpeg"
+        image_file = await bot.get_file(photo_id)
+        await image_file.download_to_drive(custom_path=image_path)
         print("Photo downloaded")
+        # TODO: upload image to segment-images, store file id into record
+        image = image_to_base64(image_path)
+        masks, boxes = request_segment_(image, text_prompt, segment_sam_url)
+        output_path = f"{tmpdirname}/output.png"
+        postprocessing(
+            image_path, output_path, masks, boxes, tmpdirname, white_outline=False
+        )
+        image_url = upload_file_and_get_presigned_url(
+            bucket_images, f"{tmpdirname}.png", output_path
+        )
+        upsert_item(
+            user_id, segmented_photo=image_url
+        )  # TODO: store presigned url, check download speed
 
     keyboard = [
         [
@@ -41,43 +65,29 @@ async def segment_photo2(update: Update) -> None:
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    # print("Storing base64 image into table item")
-    # upsert_item(user_id, segmented_photo=image_string)
-
     await bot.send_message(
         chat_id=update.effective_chat.id,
         reply_to_message_id=str(message_id),
         reply_markup=reply_markup,
-        text="Segmented this photo",
+        text="Do you want to make a sticker? ✨",
     )
 
 
-async def make_sticker2(update: Update) -> None:
-    # BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
-    # bot = Bot(BOT_API_TOKEN)
-    # await bot.initialize()
-    print("Making sticker")
-    item = get_item(update.effective_user.id)
-    # segmented_photo = item["SegmentedPhoto"]
-    with tempfile.TemporaryDirectory(dir="/tmp/") as tmpdirname:
-        output_path = f"{tmpdirname}/output.png"
-        # base64_to_image(segmented_photo, output_path)
+def request_segment_(image, text_prompt, lambda_url):
+    # TODO: convert and to .
+    print("Requesting segmentation")
+    payload = {"image": image, "text_prompt": text_prompt}
+    url = lambda_url
+    r = requests.post(url, json=payload, timeout=600)
+    c = r.content
+    j = json.loads(c)
+    boxes = j["boxes"]
+    received_compressed_np = base64.b64decode(j["masks"])
+    masks_shape = j["masks_shape"]
+    decompressed_np = np.frombuffer(zlib.decompress(received_compressed_np), dtype=bool)
+    masks = torch.tensor(decompressed_np.reshape(masks_shape))
 
-
-def image_to_base64(image_path):
-    import base64
-
-    with open(image_path, "rb") as image_file:
-        encoded_image = base64.b64encode(image_file.read())
-        return encoded_image.decode("utf-8")
-
-
-def base64_to_image(base64_string, output_file_path):
-    import base64
-
-    with open(output_file_path, "wb") as image_file:
-        decoded_image = base64.b64decode(base64_string)
-        image_file.write(decoded_image)
+    return masks, boxes
 
 
 # import os
