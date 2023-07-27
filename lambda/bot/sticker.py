@@ -45,16 +45,18 @@ async def request_segment(update: Update, text_prompt=None) -> None:
         # TODO: upload image to segment-images, store file id into record
         image = image_to_base64(image_path)
         masks, boxes = request_segment_(image, text_prompt, segment_sam_url)
+        output_path_ask = f"{tmpdirname}/output_ask.png"
         output_path = f"{tmpdirname}/output.png"
         postprocessing(
-            image_path, output_path, masks, boxes, tmpdirname, white_outline=False
+            image_path, output_path_ask, masks, boxes, tmpdirname, white_outline=False
+        )
+        postprocessing(
+            image_path, output_path, masks, boxes, tmpdirname, white_outline=True
         )
         image_url = upload_file_and_get_presigned_url(
             bucket_images, f"{tmpdirname}.png", output_path
         )
-        upsert_item(
-            user_id, segmented_photo=image_url
-        )  # TODO: store presigned url, check download speed
+        upsert_item(user_id, segmented_photo=image_url)
 
     keyboard = [
         [

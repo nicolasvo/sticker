@@ -69,9 +69,7 @@ async def main(event, context):
                 try:
                     print(f"User sent a new prompt: {update.message.text}")
                     await update.message.reply_text("Analyzing picture 🧠")
-                    return {
-                        "statusCode": 200,
-                    }
+                    return 200
                 finally:
                     print("gratteur")
                     await request_segment(update, update.message.text)
