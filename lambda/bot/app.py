@@ -41,7 +41,7 @@ async def main(event, context):
             # new prompt
             elif update.message.text and item and item.get("FileId"):
                 print(f"User sent a new prompt: {update.message.text}")
-                request_segment(update, update.message.text)
+                await request_segment(update, update.message.text)
 
             # anything else
             else:
