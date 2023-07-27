@@ -1,13 +1,10 @@
 import asyncio
 import json
 import os
-import requests
-import tempfile
 
 from telegram import Bot, Update
 
 from dynamodb import get_item, upsert_item
-from image import base64_to_image, image_to_base64
 from sticker import request_segment
 
 loop = asyncio.get_event_loop()
