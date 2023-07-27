@@ -32,7 +32,6 @@ async def request_segment(update: Update, text_prompt=None) -> None:
     BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
     bot = Bot(BOT_API_TOKEN)
     await bot.initialize()
-    await update.message.reply_text("Analyzing picture 🧠")
     user_id = update.effective_user.id
     item = get_item(user_id)
     photo_id = item.get("FileId")

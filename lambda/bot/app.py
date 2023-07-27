@@ -1,24 +1,51 @@
 import asyncio
 import json
 import os
+import requests
 
+import boto3
 from telegram import Bot, Update
 
 from dynamodb import get_item, upsert_item
 from sticker import request_segment
 
 loop = asyncio.get_event_loop()
+bot_url = os.env("BOT_URL")
+
+
+def triggering_lambda(event, context, body):
+    client = boto3.client("lambda")
+    response = client.invoke(
+        FunctionName="sticker-sam",
+        InvocationType="Event",  # Asynchronous invocation
+        Payload=json.dumps(
+            {
+                "bizarre": {"body": body},
+            }
+        ),  # Payload can be a JSON object or any data to pass to the target Lambda
+    )
 
 
 async def main(event, context):
     try:
         BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
         bot = Bot(BOT_API_TOKEN)
-        print(f"event: {event}")
-        print(f"body: {event['body']}")
-        update = json.loads(event["body"])
-        update = Update.de_json(update, bot)
-        print(update)
+        if event.get("bizarre"):
+            print("bizarre shit")
+            print(f"event: {event}")
+            print(f"body: {event['bizarre']['body']}")
+            update = json.loads(event["bizarre"]["body"])
+            update = Update.de_json(update, bot)
+            await request_segment(update, update.message.text)
+            return {
+                "statusCode": 200,
+            }
+        else:
+            print(f"event: {event}")
+            print(f"body: {event['body']}")
+            update = json.loads(event["body"])
+            update = Update.de_json(update, bot)
+            print(update)
 
         if not update.callback_query:
             user_id = update.effective_user.id
@@ -41,7 +68,9 @@ async def main(event, context):
             # new prompt
             elif update.message.text and item and item.get("FileId"):
                 print(f"User sent a new prompt: {update.message.text}")
-                await request_segment(update, update.message.text)
+                await update.message.reply_text("Analyzing picture 🧠")
+
+                # await request_segment(update, update.message.text)
 
             # anything else
             else:
