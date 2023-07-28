@@ -96,7 +96,7 @@ def request_segment_(image, text_prompt, lambda_url):
     return masks, boxes
 
 
-async def create_sticker(update: Update) -> None:
+async def make_sticker(update: Update) -> None:
     BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
     bot = Bot(BOT_API_TOKEN)
     await bot.initialize()
@@ -112,7 +112,7 @@ async def create_sticker(update: Update) -> None:
             file.write(r.content)
         try:
             bot.get_sticker_set(user.sticker_set_name)
-            add_sticker(user, bot, output_path)
+            await add_sticker(user, bot, output_path)
             sticker_set = await bot.get_sticker_set(user.sticker_set_name)
             await bot.send_sticker(
                 user.chat_id,

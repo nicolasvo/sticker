@@ -7,13 +7,12 @@ NUMERO_GAGNANT = os.getenv("NUMERO_GAGNANT")
 
 
 class User:
-    def __init__(self, update: Update, bot, reply=False):
-        # TODO: remove chat_id
-        if reply:
-            self.chat_id = update.message.chat.id
-            self.id = update.message.chat.id
-            self.firstname = update.message.chat.first_name
-        else:
+    def __init__(self, update: Update, bot):
+        if update.callback_query:
+            self.chat_id = update.callback_query.message.chat_id
+            self.id = update.callback_query.from_user.id
+            self.firstname = update.callback_query.from_user.first_name
+        elif update.message:
             self.chat_id = update.message.chat_id
             self.id = update.message.from_user.id
             self.firstname = update.message.from_user.first_name
@@ -33,19 +32,20 @@ class User:
 
     def get_sticker_set_name(self, bot, pack_number=1):
         sticker_set_name = f"Z_{pack_number}_{self.hash[:10]}_by_{self.bot_username}"
-        if pack_number > 1:
-            sticker_set_name = (
-                f"Z_{pack_number}_{self.hash[:10]}_by_{self.bot_username}"
-            )
-            return sticker_set_name
-        try:
-            sticker_set = bot.get_sticker_set(sticker_set_name)
-            if sticker_set:
-                if len(sticker_set.stickers) == 120:
-                    pack_number += 1
-                    return self.get_sticker_set_name(bot, pack_number)
-        except:
-            pass
+        # # TODO: fix multiple packs
+        # if pack_number > 1:
+        #     sticker_set_name = (
+        #         f"Z_{pack_number}_{self.hash[:10]}_by_{self.bot_username}"
+        #     )
+        #     return sticker_set_name
+        # try:
+        #     sticker_set = await bot.get_sticker_set(sticker_set_name)
+        #     if sticker_set:
+        #         if len(sticker_set.stickers) == 120:
+        #             pack_number += 1
+        #             return self.get_sticker_set_name(bot, pack_number)
+        # except:
+        #     pass
 
         return sticker_set_name
 
