@@ -74,7 +74,7 @@ async def request_segment(update: Update, text_prompt=None) -> None:
             photo=open(output_path_ask, "rb"),
             reply_to_message_id=str(message_id),
             reply_markup=reply_markup,
-            text="Do you want to make a sticker? ✨",
+            caption="Do you want to make a sticker? ✨",
         )
 
 
