@@ -68,12 +68,7 @@ async def main(event, context):
             elif update.message.text and item and item.get("FileId"):
                 print(f"User sent a new prompt: {update.message.text}")
                 await update.message.reply_text("Analyzing picture 🧠")
-                print("hoe")
                 trigger_lambda(event["body"], context)
-                print("tram")
-                # finally:
-                #     # await request_segment(update, update.message.text)
-                #     print("gratteur")
 
             # anything else
             else:
