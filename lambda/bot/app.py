@@ -76,7 +76,7 @@ async def main(event, context):
             else:
                 await bot.send_message(
                     update.message.chat_id,
-                    f"Send me a picture la!",
+                    f"Send me a picture la! 🤔️️️️️️",
                 )
         else:
             # user confirms sticker

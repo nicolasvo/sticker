@@ -120,6 +120,7 @@ async def make_sticker(update: Update) -> None:
                 reply_to_message_id=message_id,
             )
         except Exception as e:
+            print(f"exception: {e}")
             await add_sticker_pack(user, bot, output_path)
             print("get sticker")
             sticker_set = await bot.get_sticker_set(user.sticker_set_name)
