@@ -129,6 +129,8 @@ async def make_sticker(update: Update) -> None:
                 sticker_set.stickers[-1],
                 reply_to_message_id=int(message_id),
             )
+        finally:
+            delete_item(user_id)
 
 
 async def add_sticker_pack(user: User, bot, sticker_path: str) -> None:

@@ -63,4 +63,4 @@ def get_item(user_id):
 def delete_item(user_id):
     table = dynamodb.Table(table_name)
     response = table.delete_item(Key={"UserId": user_id})
-    print(f"delete respponse: {response}")
+    print(f"delete response: {response}")  # TODO: dev remove

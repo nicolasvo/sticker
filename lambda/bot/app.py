@@ -52,10 +52,11 @@ async def main(event, context):
 
             # delete
             # TODO: send the sticker you want to delete
-            await delete_sticker(update)
+            if update.message.text == "/delete":
+                await delete_sticker(update)
 
             # new photo
-            if update.message.photo or update.message.document:
+            elif update.message.photo or update.message.document:
                 print("User sent a new photo")
                 upsert_item(
                     user_id, update.message.id, update.message.photo[-1].file_id, None
@@ -96,6 +97,10 @@ async def main(event, context):
 
     except Exception as e:
         print(e)
+        try:
+            await update.message.reply_text(f"Error: {e}")
+        except:
+            await update.callback_query.message.reply_text(f"Error: {e}")
         raise e
     finally:
         return {
