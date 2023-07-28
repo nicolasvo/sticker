@@ -29,6 +29,7 @@ async def main(event, context):
     try:
         BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
         bot = Bot(BOT_API_TOKEN)
+        print(f"event: {event}")
         if event.get("bizarre"):
             print("bizarre shit")
             print(f"event: {event}")
@@ -40,7 +41,6 @@ async def main(event, context):
                 "statusCode": 200,
             }
         else:
-            print(f"event: {event}")
             print(f"body: {event['body']}")
             update = json.loads(event["body"])
             update = Update.de_json(update, bot)
@@ -72,8 +72,8 @@ async def main(event, context):
                     return 200
                 finally:
                     print("gratteur")
-                    await request_segment(update, update.message.text)
-                # trigger_lambda(event["body"], context)
+                    # await request_segment(update, update.message.text)
+                    trigger_lambda(event["body"], context)
 
             # anything else
             else:
