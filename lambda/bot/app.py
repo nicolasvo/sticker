@@ -7,7 +7,7 @@ import boto3
 from telegram import Bot, Update
 
 from dynamodb import get_item, upsert_item
-from sticker import request_segment
+from sticker import request_segment, create_sticker
 
 loop = asyncio.get_event_loop()
 
@@ -81,6 +81,8 @@ async def main(event, context):
             answer = update.callback_query.data
             if answer == "yes":
                 print("User confirmed sticker creation")
+                await create_sticker(update)
+            # TODO: else segment with rembg
 
     except Exception as e:
         print(e)
