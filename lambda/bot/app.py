@@ -7,7 +7,7 @@ import boto3
 from telegram import Bot, Update
 
 from dynamodb import get_item, upsert_item
-from sticker import request_segment, make_sticker
+from sticker import request_segment, make_sticker, delete_sticker
 
 loop = asyncio.get_event_loop()
 
@@ -51,7 +51,8 @@ async def main(event, context):
             item = get_item(user_id)
 
             # delete
-            # send the sticker you want to delete
+            # TODO: send the sticker you want to delete
+            await delete_sticker(update)
 
             # new photo
             if update.message.photo or update.message.document:
@@ -81,6 +82,7 @@ async def main(event, context):
             answer = update.callback_query.data
             if answer == "yes":
                 print("User confirmed sticker creation")
+                await update.message.reply_text("Making sticker 🔪")
                 await make_sticker(update)
             # TODO: else segment with rembg
 
