@@ -11,8 +11,6 @@ attributes = {
 
 
 def query_builder(**kwargs):
-    # q, e = query_builder(message_id=123, file_id="heheh", segmented_photo=None) # TODO: dev remove
-    # q, e = query_builder(message_id=123, file_id="heheh", segmented_photo="something") # TODO: dev remove
     query = "SET "
     expression = {}
     for k, v in kwargs.items():
@@ -26,7 +24,6 @@ def query_builder(**kwargs):
 def upsert_item(user_id, message_id=None, file_id=None, segmented_photo=None):
     item = get_item(user_id)
     if item:
-        print("item does already exists") # TODO: dev remove
         table = dynamodb.Table(table_name)
         query, expression = query_builder(
             message_id=message_id, file_id=file_id, segmented_photo=segmented_photo
@@ -37,19 +34,8 @@ def upsert_item(user_id, message_id=None, file_id=None, segmented_photo=None):
             ExpressionAttributeValues=expression,
             ReturnValues="UPDATED_NEW",
         )
-        # response = table.update_item(
-        #     Key={"UserId": user_id},
-        #     UpdateExpression="SET MessageId = :message_id, FileId = :file_id, SegmentedPhoto = :segmented_photo",
-        #     ExpressionAttributeValues={
-        #         ":message_id": message_id,
-        #         ":file_id": file_id,
-        #         ":segmented_photo": segmented_photo,
-        #     },
-        #     ReturnValues="UPDATED_NEW",
-        # )
 
     if not item:
-        print("item does not exist yet") # TODO: dev remove
         new_item = {
             "UserId": user_id,
             "MessageId": message_id,
