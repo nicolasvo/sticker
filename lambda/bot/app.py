@@ -80,9 +80,17 @@ async def main(event, context):
         else:
             # user confirms sticker
             answer = update.callback_query.data
+            chat_id = update.callback_query.message.chat_id
+            message_id = update.callback_query.message.message_id
             if answer == "yes":
                 print("User confirmed sticker creation")
-                await update.message.reply_text("Making sticker 🔪")
+                bot.edit_message_text(
+                    message_id=message_id,
+                    chat_id=chat_id,
+                    text=f"You said yes 🤌️️️️️️",
+                    reply_markup=None,
+                )
+                await update.callback_query.message.reply_text("Making sticker 🔪")
                 await make_sticker(update)
             # TODO: else segment with rembg
 
