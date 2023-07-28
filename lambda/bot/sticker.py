@@ -53,9 +53,11 @@ async def request_segment(update: Update, text_prompt=None) -> None:
         postprocessing(
             image_path, output_path, masks, boxes, tmpdirname, white_outline=True
         )
+        print("done preprocessing")
         image_url = upload_file_and_get_presigned_url(
             bucket_images, f"{tmpdirname}.png", output_path
         )
+        print("done uploading to s3")
         upsert_item(user_id, segmented_photo=image_url)
 
     keyboard = [
@@ -87,6 +89,7 @@ def request_segment_(image, text_prompt, lambda_url):
     masks_shape = j["masks_shape"]
     decompressed_np = np.frombuffer(zlib.decompress(received_compressed_np), dtype=bool)
     masks = torch.tensor(decompressed_np.reshape(masks_shape))
+    print("donezone")
 
     return masks, boxes
 
