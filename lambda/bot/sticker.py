@@ -112,12 +112,15 @@ async def make_sticker(update: Update) -> None:
             file.write(r.content)
         try:
             bot.get_sticker_set(user.sticker_set_name)
+            print("ok")
             await add_sticker(user, bot, output_path)
+            print("brudi")
             sticker_set = await bot.get_sticker_set(user.sticker_set_name)
+            print("mongo")
             await bot.send_sticker(
                 user.chat_id,
                 sticker_set.stickers[-1],
-                reply_to_message_id=message_id,
+                reply_to_message_id=int(message_id),
             )
         except Exception as e:
             print(f"exception: {e}")
