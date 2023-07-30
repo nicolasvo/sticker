@@ -81,6 +81,7 @@ async def request_segment(update: Update, text_prompt=None) -> None:
 def request_segment_(image, text_prompt, lambda_url):
     # TODO: convert and to .
     print("Requesting segmentation")
+    text_prompt = text_prompt.replace(" and ", " . ")
     payload = {"image": image, "text_prompt": text_prompt}
     url = lambda_url
     r = requests.post(url, json=payload, timeout=600)
