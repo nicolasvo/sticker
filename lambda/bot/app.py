@@ -63,7 +63,7 @@ async def main(event, context):
                 )
                 await bot.send_message(
                     update.message.chat_id,
-                    f"Write what to cut from the picture 💬\nFor example: person left and chocolate cake",
+                    f"Now write what to cut from the picture 💬\nFor example: person left and chocolate cake",
                 )
 
             # new prompt
