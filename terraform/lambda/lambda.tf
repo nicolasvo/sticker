@@ -10,12 +10,6 @@ resource "aws_cloudwatch_log_group" "bot" {
   retention_in_days = 7
 }
 
-resource "aws_cloudwatch_log_group" "bot_down" {
-  name = "/aws/lambda/${aws_lambda_function.bot_down.function_name}"
-
-  retention_in_days = 7
-}
-
 resource "aws_lambda_function" "bot_producer" {
   function_name = "sticker-producer"
   timeout       = 60
@@ -49,21 +43,6 @@ resource "aws_lambda_function" "bot" {
   role = aws_iam_role.lambda.arn
 }
 
-resource "aws_lambda_function" "bot_down" {
-  function_name = "sticker-down"
-  timeout       = 60
-  package_type  = "Image"
-  image_uri     = "${data.terraform_remote_state.ecr.outputs.repository_url_bot_down}:${var.image_tag_bot_down}"
-
-  environment {
-    variables = {
-      BOT_API_TOKEN = var.BOT_API_TOKEN
-    }
-  }
-
-  role = aws_iam_role.lambda.arn
-}
-
 data "aws_iam_policy_document" "lambda" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -86,11 +65,6 @@ resource "aws_iam_role" "lambda" {
 
 resource "aws_lambda_function_url" "bot_producer" {
   function_name      = aws_lambda_function.bot_producer.function_name
-  authorization_type = "NONE"
-}
-
-resource "aws_lambda_function_url" "bot_down" {
-  function_name      = aws_lambda_function.bot_down.function_name
   authorization_type = "NONE"
 }
 
