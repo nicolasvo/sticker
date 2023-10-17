@@ -2,6 +2,7 @@
 .terraform.lock.hcl
 terraform.tfvars
 backend.tfvars
+backend_config.tfvars
 .DS_Store
 __pycache__/
 *.pb
